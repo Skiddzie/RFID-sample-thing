@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.ReadWrite"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="ReadWrite">
+    <ScrollView>
+        <StackLayout Padding="5" Orientation="Vertical">
+            <Entry
+                x:Name="tagPattern"
+                Placeholder="Tag Pattern"
+                Text="{Binding TagPattern, Mode=TwoWay}" />
+            <StackLayout Orientation="Horizontal" Spacing="15">
+                <Label Text="Password" VerticalTextAlignment="Center" />
+                <Entry
+                    x:Name="password"
+                    HorizontalOptions="FillAndExpand"
+                    HorizontalTextAlignment="Center"
+                    Text="{Binding Password, Mode=TwoWay}" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Spacing="15">
+                <Label Text="Memory Bank" VerticalTextAlignment="Center" />
+                <Picker
+                    x:Name="memorypicker"
+                    HorizontalOptions="FillAndExpand"
+                    SelectedItem="{Binding Memorybank, Mode=TwoWay}">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>EPC</x:String>
+                            <x:String>TID</x:String>
+                            <x:String>USER</x:String>
+                            <x:String>ACCESS PASSWORD</x:String>
+                            <x:String>KILL PASSWORD</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                    <Picker.SelectedIndex>0</Picker.SelectedIndex>
+                </Picker>
+            </StackLayout>
+            <StackLayout Orientation="Vertical" VerticalOptions="EndAndExpand">
+                <Label Text="Data" />
+                <Editor
+                    x:Name="data"
+                    AutoSize="TextChanges"
+                    HorizontalOptions="FillAndExpand"
+                    Text="{Binding AccessData, Mode=TwoWay}" />
+            </StackLayout>
+            <StackLayout
+                HorizontalOptions="CenterAndExpand"
+                Orientation="Horizontal"
+                VerticalOptions="EndAndExpand">
+                <Button
+                    BackgroundColor="Blue"
+                    Clicked="ReadOperation"
+                    HorizontalOptions="FillAndExpand"
+                    Text="Read"
+                    TextColor="White" />
+                <Button
+                    BackgroundColor="Blue"
+                    Clicked="WriteOperation"
+                    HorizontalOptions="FillAndExpand"
+                    Text="Write"
+                    TextColor="White" />
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

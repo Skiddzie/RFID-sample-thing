@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.BarcodeScanner"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <StackLayout
+        CompressedLayout.IsHeadless="true"
+        Orientation="Vertical"
+        Spacing="0">
+
+        <Grid
+            Padding="5,5,5,5"
+            BackgroundColor="#E6E6E6"
+            ColumnSpacing="0"
+            RowSpacing="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <Label
+                x:Name="lbBarcodeCount"
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="10,0,0,0"
+                FontAttributes="Bold"
+                FontSize="15"
+                HorizontalOptions="Start"
+                Text="{Binding BarcodeCount}"
+                VerticalTextAlignment="Center" />
+            <Button
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="0,0,10,0"
+                Clicked="ClearClicked"
+                FontSize="12"
+                HorizontalOptions="End"
+                Text="Clear"
+                VerticalOptions="Center" />
+        </Grid>
+
+        <ListView
+            x:Name="BarcodeListView"
+            HasUnevenRows="True"
+            IsVisible="{Binding ShowList}"
+            ItemsSource="{Binding BarcodeList}"
+            SelectedItem="{Binding SelectedBarcode, Mode=TwoWay}"
+            VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout
+                            Margin="5"
+                            Padding="5"
+                            Orientation="Vertical"
+                            Spacing="4">
+                            <Label Margin="10,0,0,0" Text="{Binding Barcode}" />
+                            <Label
+                                Margin="10,0,0,0"
+                                FontAttributes="Bold"
+                                Text="{Binding BarcodeType}" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+
+        <StackLayout
+            Padding="5"
+            HorizontalOptions="Center"
+            IsVisible="{Binding ShowStatus}"
+            Orientation="Vertical"
+            Spacing="10"
+            VerticalOptions="CenterAndExpand">
+            <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                <Label Text="Reader: " />
+                <Label Text="{Binding ConnectionStatus}" TextColor="Blue" />
+            </StackLayout>
+        </StackLayout>
+
+        <Grid
+            Padding="5,5,5,5"
+            BackgroundColor="#E6E6E6"
+            ColumnSpacing="0"
+            HorizontalOptions="FillAndExpand"
+            RowSpacing="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button
+                Grid.Row="1"
+                Grid.Column="1"
+                Clicked="BRequestClicked"
+                FontSize="12"
+                HorizontalOptions="End"
+                Text="Batch Request"
+                VerticalOptions="Center" />
+        </Grid>
+
+    </StackLayout>
+
+</ContentPage>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.ReaderList"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ListView
+        x:Name="lvMenu"
+        BackgroundColor="Transparent"
+        HasUnevenRows="True"
+        ItemTapped="lvMenu_ItemTapped"
+        ItemsSource="{Binding AllItems}"
+        SelectedItem="{Binding SelectedReader, Mode=TwoWay}"
+        VerticalOptions="FillAndExpand">
+        <ListView.Header>
+            <StackLayout
+                Padding="10"
+                BackgroundColor="#cccccc"
+                Orientation="Horizontal"
+                Spacing="20">
+                <Label FontAttributes="Bold" Text="Available Readers" />
+            </StackLayout>
+        </ListView.Header>
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <StackLayout Margin="5" Padding="5">
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding DeviceNumber}" />
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsSelected}" Orientation="Horizontal">
+                            <Label Text="Serial :     " />
+                            <Label Text="{Binding DeviceSerialNumber}" />
+                        </StackLayout>
+                        <StackLayout
+                            x:Name="SerialLabel"
+                            IsVisible="{Binding IsSelected}"
+                            Orientation="Horizontal">
+                            <Label Text="Model :     " />
+                            <Label Text="{Binding DeviceModel}" />
+                        </StackLayout>
+                    </StackLayout>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</ContentPage>

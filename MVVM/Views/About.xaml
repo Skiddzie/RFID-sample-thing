@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.About"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentPage.Content>
+        <StackLayout
+            HorizontalOptions="CenterAndExpand"
+            Orientation="Vertical"
+            VerticalOptions="CenterAndExpand">
+            <StackLayout Orientation="Horizontal">
+                <Label FontAttributes="Bold" Text="Application: " />
+                <Label HorizontalOptions="EndAndExpand" Text="{Binding version}" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label FontAttributes="Bold" Text="SDK: " />
+                <Label HorizontalOptions="EndAndExpand" Text="{Binding sdkversion}" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label FontAttributes="Bold" Text="Reader: " />
+                <Label HorizontalOptions="EndAndExpand" Text="{Binding reader}" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label FontAttributes="Bold" Text="Radio: " />
+                <Label HorizontalOptions="EndAndExpand" Text="{Binding radio}" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

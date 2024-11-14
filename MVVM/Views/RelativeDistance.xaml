@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.RelativeDistance"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ZebraRFIDXamarinDemo.ViewModels">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:MultiTagLocateConverter x:Key="multiTagLocateMap" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <StackLayout
+        Padding="10"
+        Orientation="Vertical"
+        Spacing="0"
+        VerticalOptions="FillAndExpand">
+        <ListView
+            x:Name="MyListView"
+            IsVisible="{Binding listAvailable}"
+            ItemTapped="Handle_ItemTapped"
+            ItemsSource="{Binding Tags}">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">
+                            <Label Text="{Binding InvID}" />
+                            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <AbsoluteLayout Grid.Row="0" Grid.Column="0">
+                                    <BoxView
+                                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                        AbsoluteLayout.LayoutFlags="All"
+                                        Color="LightGray" />
+                                    <BoxView
+                                        AbsoluteLayout.LayoutBounds="{Binding RelativeDistance, Converter={x:StaticResource multiTagLocateMap}}"
+                                        AbsoluteLayout.LayoutFlags="All"
+                                        Color="{Binding RelativeDistance, Converter={StaticResource multiTagLocateMap}}" />
+                                </AbsoluteLayout>
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Text="{Binding RelativeDistance}" />
+                            </Grid>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackLayout
+            Padding="5"
+            HorizontalOptions="Center"
+            IsVisible="{Binding hintAvailable}"
+            Orientation="Vertical"
+            Spacing="10"
+            VerticalOptions="CenterAndExpand">
+            <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                <Label Text="Reader: " />
+                <Label Text="{Binding readerConnection}" TextColor="Blue" />
+            </StackLayout>
+            <Label IsVisible="{Binding isConnected}" Text="Press and hold the trigger for tag reading" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MauiRfidSample.MVVM.ViewModels"
+    Title="Zebra RFID Maui Sample"
+    Padding="5,0">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Clicked="ToolbarItem_Clicked" Text="@" />
+    </ContentPage.ToolbarItems>
+    <ListView
+        ItemSelected="OnListViewItemSelected"
+        ItemsSource="{x:Static local:PageDataViewModel.All}"
+        RowHeight="100"
+        SeparatorVisibility="None">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <Border
+                        Margin="3"
+                        Padding="10"
+                        BackgroundColor="AliceBlue"
+                        StrokeShape="RoundRectangle 5"
+                        StrokeThickness="2">
+                        <StackLayout HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                Text="{Binding Title}"
+                                TextColor="Blue" />
+                            <Label Text="{Binding Description}" />
+                        </StackLayout>
+                    </Border>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+
+</ContentPage>

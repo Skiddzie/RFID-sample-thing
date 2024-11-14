@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.ReaderWiFi"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentPage.Content>
+        <StackLayout
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            CompressedLayout.IsHeadless="true"
+            IsEnabled="{Binding EnableUI}"
+            Orientation="Vertical"
+            Spacing="0"
+            VerticalOptions="FillAndExpand">
+            <StackLayout Padding="0,0,0,0" IsVisible="{Binding ConnectedLayout}">
+                <Grid
+                    BackgroundColor="#E6E6E6"
+                    ColumnSpacing="0"
+                    RowSpacing="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="8*" />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        x:Name="lbConnectedProfiles"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        HorizontalOptions="Start"
+                        Text="Connected Network"
+                        TextColor="Black"
+                        VerticalTextAlignment="Center" />
+                </Grid>
+                <StackLayout
+                    Padding="20,10,10,10"
+                    BackgroundColor="LightGreen"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="StartAndExpand">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        Text="{Binding ConnectedProfile}"
+                        TextColor="Blue"
+                        VerticalTextAlignment="Center" />
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTappedConnectedProfile" />
+                    </StackLayout.GestureRecognizers>
+                </StackLayout>
+            </StackLayout>
+            <StackLayout Padding="0,0,0,0">
+                <Grid
+                    BackgroundColor="#E6E6E6"
+                    ColumnSpacing="0"
+                    RowSpacing="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="8*" />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        x:Name="lbSavedProfiles"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        HorizontalOptions="Start"
+                        Text="Saved Network"
+                        TextColor="Black"
+                        VerticalTextAlignment="Center" />
+                </Grid>
+                <ListView
+                    x:Name="lvSavedProfiles"
+                    IsVisible="true"
+                    ItemTapped="OnItemTappedSavedProfiles"
+                    ItemsSource="{Binding SavedProfilesList}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell
+                                Detail="Tap to share WiFi access from network"
+                                Text="{Binding SavedProfileSSID}"
+                                TextColor="Black" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+            <Grid
+                BackgroundColor="#E6E6E6"
+                ColumnSpacing="0"
+                RowSpacing="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
+                <Label
+                    x:Name="lbAvilableProfiles"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="10,0,0,0"
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    HorizontalOptions="Start"
+                    Text="Other Avilable Networks"
+                    TextColor="Black"
+                    VerticalTextAlignment="Center" />
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="2,2,2,2"
+                    Clicked="RefreshClicked"
+                    FontSize="12"
+                    HorizontalOptions="End"
+                    Text="Refresh"
+                    TextColor="#8c8c8c"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <ListView
+                x:Name="lvAvilableProfiles"
+                HasUnevenRows="True"
+                ItemTapped="OnItemTappedAvilableProfiles"
+                ItemsSource="{Binding AvilableProfilesList}"
+                VerticalOptions="FillAndExpand">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding AvilableProfileSSID}" TextColor="Black" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Frame
+                Grid.Row="1"
+                Margin="10,10,10,20"
+                Padding="10,10,10,10"
+                BorderColor="Gray"
+                CornerRadius="10"
+                HasShadow="True"
+                IsVisible="{Binding PopupAddProfiles}">
+
+                <FlexLayout
+                    AlignItems="Center"
+                    Direction="Column"
+                    JustifyContent="SpaceEvenly">
+
+                    <!--  Title  -->
+                    <Label
+                        Grid.Row="0"
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        Text="{Binding AddSSID}" />
+
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        Orientation="Horizontal"
+                        Spacing="15"
+                        WidthRequest="280">
+                        <Label Text="Protocol:" VerticalTextAlignment="Center" />
+                        <Picker
+                            x:Name="protocolpicker"
+                            HorizontalOptions="FillAndExpand"
+                            ItemDisplayBinding="{Binding .}"
+                            ItemsSource="{Binding ProtocolList}"
+                            SelectedIndexChanged="ProtocolPickerSelectedIndexChanged"
+                            SelectedItem="{Binding ProtocolSelected, Mode=TwoWay}" />
+                    </StackLayout>
+
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        IsVisible="{Binding IsVisibleEAPRow}"
+                        Orientation="Horizontal"
+                        Spacing="15"
+                        WidthRequest="280">
+                        <Label Text="EAP:       " VerticalTextAlignment="Center" />
+                        <Picker
+                            x:Name="eappicker"
+                            HorizontalOptions="FillAndExpand"
+                            ItemDisplayBinding="{Binding .}"
+                            SelectedItem="{Binding EAPSelected, Mode=TwoWay}"
+                            SelectedIndexChanged="EAPPickerSelectedIndexChanged">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>TTLS</x:String>
+                                    <x:String>PEAP</x:String>
+                                    <x:String>TLS</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                    </StackLayout>
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        IsVisible="{Binding IsVisibleCaCertRow}"
+                        Orientation="Horizontal"
+                        Spacing="15"
+                        WidthRequest="280">
+                        <Label Text="Ca Cert:" VerticalTextAlignment="Center" />
+                        <Picker
+                            x:Name="cacertpicker"
+                            HorizontalOptions="FillAndExpand"
+                            ItemDisplayBinding="{Binding .}"
+                            ItemsSource="{Binding CaCertList}"
+                            SelectedItem="{Binding CaCertSelected, Mode=TwoWay}" />
+                    </StackLayout>
+
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        IsVisible="{Binding IsVisibleIdentityRow}"
+                        Orientation="Horizontal"
+                        Spacing="15"
+                        WidthRequest="280">
+                        <Label Text="Identity:" VerticalTextAlignment="Center" />
+                        <Editor
+                            x:Name="identityeditor"
+                            HorizontalOptions="FillAndExpand"
+                            Text="{Binding IdentityEntry, Mode=TwoWay}" />
+                    </StackLayout>
+
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        IsVisible="{Binding IsVisibleAnIdentityRow}"
+                        Orientation="Horizontal"
+                        Spacing="15"
+                        WidthRequest="280">
+                        <Label Text="An.Identity:" VerticalTextAlignment="Center" />
+                        <Editor
+                            x:Name="anidentityeditor"
+                            HorizontalOptions="FillAndExpand"
+                            Text="{Binding AnIdentityEntry, Mode=TwoWay}" />
+                    </StackLayout>
+
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        IsVisible="{Binding IsVisibleClientCertRow}"
+                        Orientation="Horizontal"
+                        Spacing="15"
+                        WidthRequest="280">
+                        <Label Text="Client Cert:" VerticalTextAlignment="Center" />
+                        <Picker
+                            x:Name="clientcertpicker"
+                            HorizontalOptions="FillAndExpand"
+                            ItemDisplayBinding="{Binding .}"
+                            ItemsSource="{Binding ClientCertList}"
+                            SelectedItem="{Binding ClientCertSelected, Mode=TwoWay}" />
+                    </StackLayout>
+
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        IsVisible="{Binding IsVisiblePrivateKeyRow}"
+                        Orientation="Horizontal"
+                        Spacing="15"
+                        WidthRequest="280">
+                        <Label Text="Private Key:" VerticalTextAlignment="Center" />
+                        <Picker
+                            x:Name="privatekeypicker"
+                            HorizontalOptions="FillAndExpand"
+                            ItemDisplayBinding="{Binding .}"
+                            ItemsSource="{Binding PrivateKeyList}"
+                            SelectedItem="{Binding PrivateKeySelected, Mode=TwoWay}" />
+                    </StackLayout>
+
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        IsVisible="{Binding IsVisiblePasswordRow}"
+                        Orientation="Horizontal"
+                        Spacing="15"
+                        WidthRequest="280">
+                        <Label Text="Password" VerticalTextAlignment="Center" />
+                        <Editor
+                            x:Name="privatepasswordeditor"
+                            HorizontalOptions="FillAndExpand"
+                            Text="{Binding PasswordEntry, Mode=TwoWay}" />
+                    </StackLayout>
+
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        Orientation="Horizontal"
+                        VerticalOptions="FillAndExpand"
+                        WidthRequest="280">
+                        <Button
+                            Margin="10,10,10,10"
+                            BackgroundColor="Blue"
+                            Clicked="AddProfileClicked"
+                            HorizontalOptions="FillAndExpand"
+                            Text="Add"
+                            TextColor="White" />
+                        <Button
+                            Margin="10,10,10,10"
+                            BackgroundColor="Blue"
+                            Clicked="CancelClicked"
+                            HorizontalOptions="FillAndExpand"
+                            Text="Cancel"
+                            TextColor="White" />
+                    </StackLayout>
+
+                </FlexLayout>
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

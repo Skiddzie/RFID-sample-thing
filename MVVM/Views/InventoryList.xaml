@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.InventoryList"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <StackLayout
+        CompressedLayout.IsHeadless="true"
+        Orientation="Vertical"
+        Spacing="0"
+        VerticalOptions="FillAndExpand">
+        <StackLayout
+            Margin="0"
+            Padding="5,5,5,0"
+            BackgroundColor="#cccccc"
+            Orientation="Horizontal">
+            <Label
+                FontAttributes="Bold"
+                FontSize="Micro"
+                Text="Unique Tags" />
+            <Label
+                Margin="0,0,60,0"
+                FontAttributes="Bold"
+                FontSize="Micro"
+                HorizontalOptions="CenterAndExpand"
+                Text="Total Read" />
+            <Label
+                FontAttributes="Bold"
+                FontSize="Micro"
+                HorizontalOptions="End"
+                Text="Read Time" />
+        </StackLayout>
+        <StackLayout
+            Margin="0"
+            Padding="5"
+            BackgroundColor="#cccccc"
+            Orientation="Horizontal">
+            <Label
+                FontSize="Medium"
+                Text="{Binding UniqueTags}"
+                TextColor="Blue" />
+            <Label
+                FontSize="Medium"
+                HorizontalOptions="CenterAndExpand"
+                Text="{Binding TotalTags}"
+                TextColor="Blue" />
+            <Label
+                FontSize="Medium"
+                HorizontalOptions="End"
+                Text="{Binding TotalTime}"
+                TextColor="Blue" />
+        </StackLayout>
+        <StackLayout
+            Padding="5"
+            BackgroundColor="#cccccc"
+            Orientation="Horizontal"
+            Spacing="10">
+            <Label FontAttributes="Bold" Text="ID" />
+            <Label
+                FontAttributes="Bold"
+                HorizontalOptions="EndAndExpand"
+                Text="RSSI" />
+            <Label
+                FontAttributes="Bold"
+                HorizontalOptions="End"
+                Text="COUNT" />
+        </StackLayout>
+        <ListView
+            BackgroundColor="Transparent"
+            HasUnevenRows="True"
+            IsVisible="{Binding listAvailable}"
+            ItemsSource="{Binding AllItems}"
+            SelectedItem="{Binding MySelectedItem, Mode=TwoWay}"
+            VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid
+                            Padding="5"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="260" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Text="{Binding InvID}" />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Text="{Binding RSSI}" />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                Text="{Binding TagCount}" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackLayout
+            Padding="5"
+            HorizontalOptions="Center"
+            IsVisible="{Binding hintAvailable}"
+            Orientation="Vertical"
+            Spacing="10"
+            VerticalOptions="CenterAndExpand">
+            <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                <Label Text="Reader: " />
+                <Label Text="{Binding readerConnection}" TextColor="Blue" />
+            </StackLayout>
+            <Label IsVisible="{Binding isConnected}" Text="{Binding readerStatus}" />
+        </StackLayout>
+
+    </StackLayout>
+</ContentPage>

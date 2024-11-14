@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.FirmwareUpdate"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentPage.Content>
+        <StackLayout Padding="5">
+            <StackLayout Orientation="Vertical" VerticalOptions="Center">
+                <Label Text="Connected Device: " />
+                <Label Text="{Binding ConnectedDevice}" TextColor="Blue" />
+            </StackLayout>
+            <StackLayout Orientation="Vertical" VerticalOptions="Center">
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="From: " />
+                            <Span Text="{Binding ScannerFWVersion}" TextColor="Blue" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="To: " />
+                            <Span Text="{Binding MySelectedFile}" TextColor="Blue" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </StackLayout>
+            <StackLayout Orientation="Vertical" VerticalOptions="Center">
+                <Button
+                    x:Name="update_button"
+                    BackgroundColor="Blue"
+                    Clicked="ButtonFirmwareClicked"
+                    Text="{Binding FirmwareButton}" />
+            </StackLayout>
+            <StackLayout Orientation="Vertical" VerticalOptions="EndAndExpand">
+                <Label Text="Firmware Update Progress" />
+                <ProgressBar Progress="{Binding CurrentProgress}" ScaleY="2" />
+                <Label HorizontalTextAlignment="End" Text="{Binding CurrentPercentage}" />
+            </StackLayout>
+            <StackLayout Orientation="Vertical" VerticalOptions="EndAndExpand">
+                <Label Text="Copy .DAT file into /sdcard/Download/ZebraFirmware and then start update" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

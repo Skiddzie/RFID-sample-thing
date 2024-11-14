@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.LocateTag"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <Entry
+                x:Name="tagPattern"
+                Placeholder="Tag Pattern"
+                Text="{Binding TagPattern, Mode=TwoWay}" />
+            <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <AbsoluteLayout Rotation="180">
+                    <BoxView AbsoluteLayout.LayoutBounds="0,.5,50,300" Color="Gold" />
+                    <BoxView AbsoluteLayout.LayoutBounds="{Binding DistanceBox}" Color="Blue" />
+                </AbsoluteLayout>
+                <Label
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="{Binding RelativeDistance}" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

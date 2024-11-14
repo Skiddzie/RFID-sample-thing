@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.TriggerMapping"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <StackLayout Padding="5" Orientation="Vertical">
+        <StackLayout
+            Margin="0,10"
+            Orientation="Horizontal"
+            Spacing="15">
+            <Label Text="Upper Trigger:" VerticalTextAlignment="Center" />
+            <Picker
+                x:Name="uppertrigger"
+                HorizontalOptions="FillAndExpand"
+                SelectedItem="{Binding SelectedUTrigger, Mode=TwoWay}">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>RFID</x:String>
+                        <x:String>Sled Scanner</x:String>
+                        <x:String>Terminal Scanner</x:String>
+                        <x:String>Scan Notification</x:String>
+                        <x:String>No Action</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+                <Picker.SelectedIndex>0</Picker.SelectedIndex>
+            </Picker>
+        </StackLayout>
+        <StackLayout
+            Margin="0,10"
+            Orientation="Horizontal"
+            Spacing="15">
+            <Label Text="Lower Trigger:" VerticalTextAlignment="Center" />
+            <Picker
+                x:Name="lowertrigger"
+                HorizontalOptions="FillAndExpand"
+                SelectedItem="{Binding SelectedLTrigger, Mode=TwoWay}">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>RFID</x:String>
+                        <x:String>Sled Scanner</x:String>
+                        <x:String>Terminal Scanner</x:String>
+                        <x:String>Scan Notification</x:String>
+                        <x:String>No Action</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+                <Picker.SelectedIndex>0</Picker.SelectedIndex>
+            </Picker>
+        </StackLayout>
+        <StackLayout
+            Margin="0,10"
+            HorizontalOptions="CenterAndExpand"
+            Orientation="Horizontal"
+            VerticalOptions="StartAndExpand">
+            <Button
+                BackgroundColor="Blue"
+                Clicked="ButtonApplyClicked"
+                HorizontalOptions="FillAndExpand"
+                Text="APPLY"
+                TextColor="White" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

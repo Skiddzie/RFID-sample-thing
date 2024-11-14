@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiRfidSample.MVVM.Views.Lock"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Lock">
+    <StackLayout Padding="10,10,10,10" Spacing="10">
+        <Entry
+            x:Name="LockTagPattern"
+            Placeholder="Tag Pattern"
+            Text="{Binding TagPattern, Mode=TwoWay}" />
+        <StackLayout Orientation="Horizontal" Spacing="15">
+            <Label Text="Password" VerticalTextAlignment="Center" />
+            <Entry
+                x:Name="LockPassword"
+                HorizontalOptions="FillAndExpand"
+                HorizontalTextAlignment="Center"
+                Text="{Binding Password, Mode=TwoWay}" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Spacing="15">
+            <Label Text="Memory Bank" VerticalTextAlignment="Center" />
+            <Picker
+                x:Name="memorylockpicker"
+                HorizontalOptions="FillAndExpand"
+                SelectedItem="{Binding Memorybank, Mode=TwoWay}">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>EPC</x:String>
+                        <x:String>TID</x:String>
+                        <x:String>USER</x:String>
+                        <x:String>ACCESS PASSWORD</x:String>
+                        <x:String>KILL PASSWORD</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+                <Picker.SelectedIndex>0</Picker.SelectedIndex>
+            </Picker>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Spacing="15">
+            <Label Text="Lock Privilege" VerticalTextAlignment="Center" />
+            <Picker
+                x:Name="lockPrivilege"
+                HorizontalOptions="FillAndExpand"
+                SelectedItem="{Binding LockPrivilege, Mode=TwoWay}">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Read and Write</x:String>
+                        <x:String>Permanent Lock</x:String>
+                        <x:String>Permanent Unlock</x:String>
+                        <x:String>Unlock</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+                <Picker.SelectedIndex>0</Picker.SelectedIndex>
+            </Picker>
+        </StackLayout>
+        <StackLayout
+            HorizontalOptions="CenterAndExpand"
+            Orientation="Horizontal"
+            VerticalOptions="EndAndExpand">
+            <Button
+                BackgroundColor="Blue"
+                Clicked="LockOperation"
+                HorizontalOptions="FillAndExpand"
+                Text="LOCK"
+                TextColor="White" />
+        </StackLayout>
+
+    </StackLayout>
+</ContentPage>
