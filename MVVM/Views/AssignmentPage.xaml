@@ -3,28 +3,51 @@
     x:Class="MauiRfidSample.MVVM.Views.AssignmentPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="jira assignment">
+    Title="Jira Assignment">
 
     <VerticalStackLayout>
         <Label
             Margin="0,20,0,10"
             FontSize="24"
             HorizontalOptions="Center"
-            Text="tags"
+            Text="Tags"
             VerticalOptions="Start" />
+
+        <HorizontalStackLayout Padding="10" VerticalOptions="Start">
+            <Entry
+                x:Name="PowerLevelEntry"
+                Placeholder="Enter Power Level"
+                Keyboard="Numeric"
+                Text="{Binding PowerLevelInput, Mode=TwoWay}"
+                WidthRequest="150"
+                HorizontalOptions="StartAndExpand" />
+            <Button
+                Text="Set Power"
+                Command="{Binding SetPowerCommand}"
+                HorizontalOptions="End" />
+        </HorizontalStackLayout>
 
         <CollectionView
             x:Name="TagCollectionView"
-            ItemsSource="{Binding AllTags}"
+            ItemsSource="{Binding AllItems}"
             VerticalOptions="FillAndExpand">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Label
-                        Padding="10"
-                        FontSize="18"
-                        HorizontalOptions="Start"
-                        Text="{Binding InvID}"
-                        VerticalOptions="Center" />
+                    <HorizontalStackLayout Padding="10">
+
+                        <Label
+                            FontSize="18"
+                            HorizontalOptions="StartAndExpand"
+                            Text="{Binding InvID}"
+                            VerticalOptions="Center" />
+                        
+                        <Label
+                            FontSize="18"
+                            HorizontalOptions="End"
+                            Text="{Binding RSSI, StringFormat='RSSI: {0}'}"
+                            VerticalOptions="Center" />
+                        
+                    </HorizontalStackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
