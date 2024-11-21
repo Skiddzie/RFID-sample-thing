@@ -4,52 +4,126 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Jira Assignment">
+    <ScrollView>
+        <VerticalStackLayout>
+            <!--  Title  -->
+            <Label
+                Margin="0,20,0,10"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="RFID Tag Reader"
+                VerticalOptions="Start" />
 
-    <VerticalStackLayout>
-        <Label
-            Margin="0,20,0,10"
-            FontSize="24"
-            HorizontalOptions="Center"
-            Text="Tags"
-            VerticalOptions="Start" />
+            <!--  Set Power  -->
+            <HorizontalStackLayout Padding="10" VerticalOptions="Start">
+                <Entry
+                    x:Name="PowerLevelEntry"
+                    HorizontalOptions="StartAndExpand"
+                    Keyboard="Numeric"
+                    Placeholder="Enter Power Level"
+                    Text="{Binding PowerLevelInput, Mode=TwoWay}"
+                    WidthRequest="150" />
+                <Button
+                    Command="{Binding SetPowerCommand}"
+                    HorizontalOptions="End"
+                    Text="Set Power" />
 
-        <HorizontalStackLayout Padding="10" VerticalOptions="Start">
-            <Entry
-                x:Name="PowerLevelEntry"
-                Placeholder="Enter Power Level"
-                Keyboard="Numeric"
-                Text="{Binding PowerLevelInput, Mode=TwoWay}"
-                WidthRequest="150"
-                HorizontalOptions="StartAndExpand" />
-            <Button
-                Text="Set Power"
-                Command="{Binding SetPowerCommand}"
-                HorizontalOptions="End" />
-        </HorizontalStackLayout>
+            </HorizontalStackLayout>
 
-        <CollectionView
-            x:Name="TagCollectionView"
-            ItemsSource="{Binding AllItems}"
-            VerticalOptions="FillAndExpand">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <HorizontalStackLayout Padding="10">
+            <VerticalStackLayout Padding="10">
+                <Label
+                    Margin="0,20,0,10"
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="Memory Bank Settings:" />
 
-                        <Label
-                            FontSize="18"
-                            HorizontalOptions="StartAndExpand"
-                            Text="{Binding InvID}"
-                            VerticalOptions="Center" />
-                        
-                        <Label
-                            FontSize="18"
-                            HorizontalOptions="End"
-                            Text="{Binding RSSI, StringFormat='RSSI: {0}'}"
-                            VerticalOptions="Center" />
-                        
-                    </HorizontalStackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </VerticalStackLayout>
+                <Entry
+                    HorizontalOptions="FillAndExpand"
+                    Placeholder="Enter Tag ID"
+                    Text="{Binding TagPattern, Mode=TwoWay}" />
+
+                <Entry
+                    HorizontalOptions="FillAndExpand"
+                    Placeholder="Enter Access Password (Hex)"
+                    Text="{Binding Password, Mode=TwoWay}" />
+
+                <Picker
+                    Title="Select Memory Bank"
+                    HorizontalOptions="FillAndExpand"
+                    ItemsSource="{Binding MemoryBanks}"
+                    SelectedItem="{Binding Memorybank, Mode=TwoWay}" />
+
+
+                <Label Margin="0,20,0,0" Text="write" />
+                <Entry
+                    HorizontalOptions="FillAndExpand"
+                    Placeholder="Enter Data to Write to Tag"
+                    Text="{Binding AccessData, Mode=TwoWay}" />
+                <Button
+                    Margin="0,20,0,0"
+                    Command="{Binding WriteCommand}"
+                    HorizontalOptions="Center"
+                    Text="Write Data" />
+                <Button
+                    Margin="0,20,0,0"
+                    Command="{Binding ReadCommand}"
+                    HorizontalOptions="Center"
+                    Text="Read Data" />
+                <Label
+                    Margin="0,20,0,0"
+                    FontAttributes="Bold"
+                    Text="Data Read from User Memory:" />
+                <Label
+                    HorizontalOptions="Center"
+                    Text="{Binding AccessData}"
+                    VerticalOptions="CenterAndExpand" />
+
+            </VerticalStackLayout>
+            <Label
+                Margin="0,20,0,0"
+                FontAttributes="Bold"
+                Text="Tags Read:" />
+            <ListView
+                x:Name="TagCollectionView"
+                BackgroundColor="Transparent"
+                HasUnevenRows="True"
+                IsVisible="{Binding listAvailable}"
+                ItemsSource="{Binding AllItems}"
+                SelectedItem="{Binding MySelectedItem, Mode=TwoWay}"
+                VerticalOptions="FillAndExpand">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid
+                                Padding="5"
+                                HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="260" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Text="{Binding InvID}" />
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Text="{Binding RSSI}" />
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Text="{Binding TagCount}" />
+
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

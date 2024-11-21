@@ -1,4 +1,6 @@
-﻿using Com.Zebra.Rfid.Api3;
+﻿using Android.Widget;
+using Com.Zebra.Rfid.Api3;
+using Java.Lang;
 using MauiRfidSample.MVVM.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Timers;
 using System.Windows.Input;
+using Xamarin.Google.Crypto.Tink.Prf;
+
 using static Com.Zebra.Rfid.Api3.Antennas;
+using Exception = System.Exception;
+using Object = System.Object;
+using String = System.String;
 
 namespace MauiRfidSample.MVVM.ViewModels
 {
@@ -23,6 +30,21 @@ namespace MauiRfidSample.MVVM.ViewModels
         private System.Timers.Timer aTimer;
         private bool _listAvailable;
 
+        //copied from ReadWriteOperationsModel
+        private string _accessData;
+        private string _TagPattern;
+        private string _Password;
+        private string _Memorybank, _LockPrivilege;
+
+        private int Count = 0;
+        private int Offset = 2;
+        private MEMORY_BANK MemoryBankParam = MEMORY_BANK.MemoryBankEpc;
+
+        private static ReaderModel rfid = ReaderModel.readerModel;
+
+        public List<string> MemoryBanks { get; } = new List<string> { "EPC", "TID", "USER", "ACCESS PASSWORD", "KILL PASSWORD" };
+        //
+
         private string _powerLevelInput;
         public string PowerLevelInput
         {
@@ -37,25 +59,174 @@ namespace MauiRfidSample.MVVM.ViewModels
             }
         }
 
+        //
+        public string AccessData
+        {
+            get { return _accessData; }
+            set { _accessData = value; OnPropertyChanged(); }
+        }
+
+        public string TagPattern
+        {
+            get { return _TagPattern; }
+            set { _TagPattern = value; OnPropertyChanged(); }
+        }
+
+        public string Password
+        {
+            get { return _Password; }
+            set { _Password = value; OnPropertyChanged(); }
+        }
+
+        public string Memorybank
+        {
+            get { return _Memorybank; }
+            set { _Memorybank = value; OnPropertyChanged(); }
+        }
+
+        public string LockPrivilege
+        {
+            get { return _LockPrivilege; }
+            set { _LockPrivilege = value; OnPropertyChanged(); }
+        }
+        //
+
         public ICommand SetPowerCommand { get; }
+        public ICommand ReadCommand { get; }
+        public ICommand WriteCommand { get; }
+
 
         public AssignmentPageModel()
         {
-            // Initialize collection if null
+
             if (_allItems == null)
                 _allItems = new ObservableCollection<TagItem>();
 
-            // Default power level (optional)
             PowerLevelInput = "270";
 
-            // Initialize command
+
             SetPowerCommand = new Command(SetPower);
 
-            // Ensure the reader is set up
-            rfidModel.Setup();
-
-            // UI for hint
+            if (!rfidModel.isConnected) // Only setup if not already connected
+            {
+                rfidModel.Setup();
+            }
             updateHints();
+
+            Password = "0";
+            Memorybank = "EPC";
+            LockPrivilege = "Read and Write";
+            AccessData = "";
+            TagPattern = SelectedItem?.ToString() ?? "";
+
+            ReadCommand = new Command(() => AccessOperationsReadClicked());
+
+            WriteCommand = new Command(() => AccessOperationsWriteClicked());
+        }
+
+        private void UpdateBank()
+        {
+            switch (Memorybank)
+            {
+                case "EPC":
+                    Count = 0;
+                    Offset = 2;
+                    MemoryBankParam = MEMORY_BANK.MemoryBankEpc;
+                    break;
+                case "TID":
+                    Count = 0;
+                    Offset = 0;
+                    MemoryBankParam = MEMORY_BANK.MemoryBankTid;
+                    break;
+                case "USER":
+                    Count = 0; //make this 2
+                    Offset = 0;
+                    MemoryBankParam = MEMORY_BANK.MemoryBankUser;
+                    break;
+                case "ACCESS PASSWORD":
+                    Count = 2;
+                    Offset = 2;
+                    MemoryBankParam = MEMORY_BANK.MemoryBankReserved;
+                    break;
+                case "KILL PASSWORD":
+                    Count = 2;
+                    Offset = 0;
+                    MemoryBankParam = MEMORY_BANK.MemoryBankReserved;
+                    break;
+            }
+        }
+
+        public void AccessOperationsReadClicked()
+        {
+            string TagId = TagPattern;
+            UpdateBank();
+            if (ValidateFields())
+            {
+
+                TagAccess tagAccess = new TagAccess();
+                TagAccess.ReadAccessParams readAccessParams = new TagAccess.ReadAccessParams(tagAccess);
+
+                readAccessParams.AccessPassword = (long)Long.Decode("0X" + Password);
+                readAccessParams.Count = Count;
+                readAccessParams.MemoryBank = MemoryBankParam;
+                readAccessParams.Offset = Offset;
+
+                ThreadPool.QueueUserWorkItem(o =>
+                {
+                    try
+                    {
+                        TagData tagData = rfid.rfidReader.Actions.TagAccess.ReadWait(TagId, readAccessParams, null, false);
+                        AccessData = tagData.MemoryBankData?.ToString();
+                        ShowAlert(tagData.OpStatus.ToString());
+                    }
+                    catch (InvalidUsageException e)
+                    {
+                        e.PrintStackTrace();
+                        ShowAlert(e);
+                    }
+                    catch (OperationFailureException e)
+                    {
+                        e.PrintStackTrace();
+                        ShowAlert(e);
+                    }
+                });
+            }
+
+        }
+
+        public void AccessOperationsWriteClicked()
+        {
+            string TagId = TagPattern;
+            UpdateBank();
+            if (ValidateFields())
+            {
+                TagAccess tagAccess = new TagAccess();
+                TagAccess.WriteAccessParams writeAccessParams = new TagAccess.WriteAccessParams(tagAccess);
+                writeAccessParams.AccessPassword = (long)Long.Decode("0X" + Password);
+                writeAccessParams.MemoryBank = MemoryBankParam;
+                writeAccessParams.Offset = Offset;
+                writeAccessParams.SetWriteData(AccessData);
+                writeAccessParams.WriteDataLength = AccessData.Length / 4;
+
+                ThreadPool.QueueUserWorkItem(o =>
+                {
+                    try
+                    {
+                        rfid.rfidReader.Actions.TagAccess.WriteWait(TagId, writeAccessParams, null, null, true, false);
+                        ShowAlert("Write Success");
+                    }
+                    catch (InvalidUsageException e)
+                    {
+                        e.PrintStackTrace();
+                        ShowAlert(e);
+                    }
+                    catch (OperationFailureException e)
+                    {
+                        e.PrintStackTrace();
+                        ShowAlert(e);
+                    }
+                });
+            }
         }
 
         private async void SetPower()
@@ -71,16 +242,13 @@ namespace MauiRfidSample.MVVM.ViewModels
                 if (int.TryParse(PowerLevelInput, out int powerLevel))
                 {
 
-                    int antennaID = 1; // Assuming antenna ID is 1
+                    
 
-                    // Access the antenna configuration
-                    AntennaRfConfig antennaRfConfig = rfidModel.rfidReader.Config.Antennas.GetAntennaRfConfig(antennaID);
+                    AntennaRfConfig antennaRfConfig = rfidModel.rfidReader.Config.Antennas.GetAntennaRfConfig(1);
 
-                    // Set the transmit power index
                     antennaRfConfig.TransmitPowerIndex = powerLevel;
 
-                    // Apply the new configuration
-                    rfidModel.rfidReader.Config.Antennas.SetAntennaRfConfig(antennaID, antennaRfConfig);
+                    rfidModel.rfidReader.Config.Antennas.SetAntennaRfConfig(1, antennaRfConfig);
 
                     Console.WriteLine($"Transmit power set to level {powerLevel}.");
                 }
@@ -104,7 +272,6 @@ namespace MauiRfidSample.MVVM.ViewModels
             base.ReaderConnectionEvent(connection);
             if (connection)
             {
-                // Set the default power level when connected
                 SetPower();
             }
             updateHints();
@@ -114,8 +281,20 @@ namespace MauiRfidSample.MVVM.ViewModels
 
         public ObservableCollection<TagItem> AllItems { get => _allItems; set => _allItems = value; }
 
-        public TagItem MySelectedItem { get => _mySelectedItem; set => _mySelectedItem = value; }
-
+        public TagItem MySelectedItem
+        {
+            get => _mySelectedItem;
+            set
+            {
+                if (_mySelectedItem != value)
+                {
+                    _mySelectedItem = value;
+                    OnPropertyChanged();
+                    // Update TagPattern when selection changes
+                    TagPattern = _mySelectedItem?.InvID;
+                }
+            }
+        }
         public static String SelectedItem
         {
             get { return _mySelectedItem?.InvID; }
@@ -252,6 +431,11 @@ namespace MauiRfidSample.MVVM.ViewModels
             });
         }
 
+        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            updateCounts();
+        }
+
         private void SetTimer()
         {
             // Create a timer with a two second interval.
@@ -262,10 +446,6 @@ namespace MauiRfidSample.MVVM.ViewModels
             aTimer.Enabled = true;
         }
 
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
-        {
-            updateCounts();
-        }
 
 
         private void updateHints()
@@ -281,6 +461,51 @@ namespace MauiRfidSample.MVVM.ViewModels
             }
             else
                 _listAvailable = true;
+        }
+
+        private void ShowAlert(string message)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Toast.MakeText(Android.App.Application.Context, message, ToastLength.Short).Show();
+            });
+        }
+
+
+        private void ShowAlert(OperationFailureException e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Toast.MakeText(Android.App.Application.Context, e.VendorMessage, ToastLength.Short).Show();
+            });
+        }
+
+        private void ShowAlert(InvalidUsageException e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Toast.MakeText(Android.App.Application.Context, e.Info, ToastLength.Short).Show();
+            });
+        }
+
+        private bool ValidateFields()
+        {
+            if (isConnected)
+            {
+                try
+                {
+                    long pw = (long)Long.Decode("0X" + Password);
+                    return true;
+                }
+                catch (NumberFormatException nfe)
+                {
+                    nfe.PrintStackTrace();
+                    Android.Widget.Toast.MakeText(Android.App.Application.Context, "Password field is invalid !", ToastLength.Long).Show();
+                }
+            }
+            else
+                Android.Widget.Toast.MakeText(Android.App.Application.Context, "Reader is not connected", ToastLength.Long).Show();
+            return false;
         }
     }
 }
