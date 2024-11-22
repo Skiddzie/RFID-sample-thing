@@ -107,7 +107,7 @@ namespace MauiRfidSample.MVVM.ViewModels
 
             SetPowerCommand = new Command(SetPower);
 
-            if (!rfidModel.isConnected) // Only setup if not already connected
+            if (!rfidModel.isConnected)
             {
                 rfidModel.Setup();
             }
@@ -139,7 +139,7 @@ namespace MauiRfidSample.MVVM.ViewModels
                     MemoryBankParam = MEMORY_BANK.MemoryBankTid;
                     break;
                 case "USER":
-                    Count = 0; //make this 2
+                    Count = 0; //originally 2
                     Offset = 0;
                     MemoryBankParam = MEMORY_BANK.MemoryBankUser;
                     break;
@@ -238,24 +238,13 @@ namespace MauiRfidSample.MVVM.ViewModels
                     Console.WriteLine("RFID reader is not connected.");
                     return;
                 }
+                AntennaRfConfig antennaRfConfig = rfidModel.rfidReader.Config.Antennas.GetAntennaRfConfig(1);
 
-                if (int.TryParse(PowerLevelInput, out int powerLevel))
-                {
+                antennaRfConfig.TransmitPowerIndex = int.Parse(PowerLevelInput);
 
-                    
+                rfidModel.rfidReader.Config.Antennas.SetAntennaRfConfig(1, antennaRfConfig);
 
-                    AntennaRfConfig antennaRfConfig = rfidModel.rfidReader.Config.Antennas.GetAntennaRfConfig(1);
-
-                    antennaRfConfig.TransmitPowerIndex = powerLevel;
-
-                    rfidModel.rfidReader.Config.Antennas.SetAntennaRfConfig(1, antennaRfConfig);
-
-                    Console.WriteLine($"Transmit power set to level {powerLevel}.");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Invalid Input", "Please enter a numeric value for the power level.", "OK");
-                }
+                Console.WriteLine($"Transmit power set to level {PowerLevelInput}.");
             }
             catch (OperationFailureException ex)
             {
