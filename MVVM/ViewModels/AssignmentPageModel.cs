@@ -30,7 +30,6 @@ namespace MauiRfidSample.MVVM.ViewModels
         private System.Timers.Timer aTimer;
         private bool _listAvailable;
 
-        //copied from ReadWriteOperationsModel
         private string _accessData;
 
         private string _filterEPC;
@@ -50,7 +49,6 @@ namespace MauiRfidSample.MVVM.ViewModels
         private static ReaderModel rfid = ReaderModel.readerModel;
 
         public List<string> MemoryBanks { get; } = new List<string> { "EPC", "TID", "USER", "ACCESS PASSWORD", "KILL PASSWORD" };
-        //
 
         private string _powerLevelInput;
         public string PowerLevelInput
@@ -66,15 +64,13 @@ namespace MauiRfidSample.MVVM.ViewModels
             }
         }
 
-        //
+        // if you end up using the other memory banks this has to be turned into several different variables
         public string AccessData
         {
             get { return _accessData; }
             set { _accessData = value; OnPropertyChanged(); }
         }
-
-
-        //
+        //--------------------------------------------------------------------------------------------------
         public string FilterEPC
         {
             get { return _filterEPC; }
@@ -123,7 +119,6 @@ namespace MauiRfidSample.MVVM.ViewModels
             get { return _LockPrivilege; }
             set { _LockPrivilege = value; OnPropertyChanged(); }
         }
-        //
 
         public ICommand SetPowerCommand { get; }
         public ICommand ReadCommand { get; }
@@ -135,8 +130,8 @@ namespace MauiRfidSample.MVVM.ViewModels
 
             if (_allItems == null)
                 _allItems = new ObservableCollection<TagItem>();
-
-            PowerLevelInput = "270";
+            //wanna keep this low now incase this shit gives you turbo cancer
+            PowerLevelInput = "50";
 
 
             SetPowerCommand = new Command(SetPower);
@@ -162,22 +157,19 @@ namespace MauiRfidSample.MVVM.ViewModels
         {
             try
             {
-                // Validate and parse FilterEPC (0-7)
                 if (!int.TryParse(FilterEPC, out int filterValue) || filterValue < 0 || filterValue > 7)
                 {
-                    ShowAlert("Filter value must be a number between 0 and 7.");
+                    ShowAlert("filter value must be a number between 0 and 7.");
                     return 1;
                 }
 
-                // Validate and parse PartitionEPC (0-6)
                 if (!int.TryParse(PartitionEPC, out int partitionValue) || partitionValue < 0 || partitionValue > 6)
                 {
-                    ShowAlert("Partition value must be a number between 0 and 6.");
+                    ShowAlert("partition value must be a number between 0 and 6.");
                     return 1;
                 }
 
-                // Define bit allocations based on partition value
-                // The sum of Company Prefix Bits and Item Reference Bits is always 44 bits
+
                 int companyPrefixBits = 0;
                 int itemReferenceBits = 0;
                 int serialNumberBits = 38;
@@ -236,33 +228,28 @@ namespace MauiRfidSample.MVVM.ViewModels
                         return 1;
                 }
 
-                // Validate PrefixEPC (Company Prefix)
                 if (!ulong.TryParse(PrefixEPC, out ulong companyPrefixNumber))
                 {
                     ShowAlert($"Company Prefix must be a {companyPrefixDigits}-digit numeric string.");
                     return 1;
                 }
 
-                // Validate ReferenceEPC (Item Reference)
                 if (!ulong.TryParse(ReferenceEPC, out ulong itemReferenceNumber))
                 {
                     ShowAlert($"Item Reference must be a {itemReferenceDigits}-digit numeric string.");
                     return 1;
                 }
 
-                // Serial Number Bits are always 38 bits in SGTIN-96
-                
+
                 ulong maxSerialNumber = (ulong)(System.Math.Pow(2, serialNumberBits) - 1);
 
-                // Validate SerialEPC (Serial Number)
                 if (string.IsNullOrEmpty(SerialEPC) || !ulong.TryParse(SerialEPC, out ulong serialNumber) || serialNumber > maxSerialNumber)
                 {
                     ShowAlert($"Serial Number must be a numeric string up to 12 digits (max {maxSerialNumber}).");
                     return 1;
                 }
 
-                // Convert components to binary strings with appropriate padding
-                string headerBin = Convert.ToString(48, 2).PadLeft(8, '0'); // Header for SGTIN-96 is '00110000' which is 48 in decimal
+                string headerBin = Convert.ToString(48, 2).PadLeft(8, '0');
                 string filterBin = Convert.ToString(filterValue, 2).PadLeft(3, '0');
                 string partitionBin = Convert.ToString(partitionValue, 2).PadLeft(3, '0');
 
@@ -270,10 +257,8 @@ namespace MauiRfidSample.MVVM.ViewModels
                 string itemReferenceBin = Convert.ToString((long)itemReferenceNumber, 2).PadLeft(itemReferenceBits, '0');
                 string serialNumberBin = Convert.ToString((long)serialNumber, 2).PadLeft(serialNumberBits, '0');
 
-                // Concatenate all binary components
                 string epcBin = headerBin + filterBin + partitionBin + companyPrefixBin + itemReferenceBin + serialNumberBin;
 
-                // Validate that the total EPC binary string is 96 bits long
                 int totalBits = epcBin.Length;
                 if (totalBits != 96)
                 {
@@ -281,7 +266,8 @@ namespace MauiRfidSample.MVVM.ViewModels
                     return 1;
                 }
 
-                // Convert binary string to hexadecimal
+                //convert back to hex. idk how this works
+                //why is it not ToString() with base 16 the way binary would be with base 2?
                 StringBuilder epcHexBuilder = new StringBuilder(24);
                 for (int i = 0; i < 96; i += 4)
                 {
@@ -291,10 +277,13 @@ namespace MauiRfidSample.MVVM.ViewModels
 
                 string epcHex = epcHexBuilder.ToString();
 
-                // Set AccessData to EPC string
-                AccessData = epcHex.ToUpper(); // Convert to uppercase for consistency
+                //this variable is also being used to send to other memory banks, which causes issues
+                AccessData = epcHex.ToUpper(); 
 
-                // No error occurred; return success
+                //returning integers because checking for null values within the method itself seems to give null exceptions anyway
+                //the issue only exists with prefix and reference, no clue why
+                //there's probably a much more elegant way to do this, but this is what i found works, and it doesn't seem to cause any issues
+                //now it's like a c program :)
                 return 0;
             }
             catch (Exception ex)
