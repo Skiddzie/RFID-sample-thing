@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Timers;
 using System.Windows.Input;
@@ -48,7 +49,11 @@ namespace MauiRfidSample.MVVM.ViewModels
 
         private static ReaderModel rfid = ReaderModel.readerModel;
 
+        private readonly EPCBuilder _epcBuilder;
+
+
         public List<string> MemoryBanks { get; } = new List<string> { "EPC", "TID", "USER", "ACCESS PASSWORD", "KILL PASSWORD" };
+
 
         private string _powerLevelInput;
         public string PowerLevelInput
@@ -127,6 +132,7 @@ namespace MauiRfidSample.MVVM.ViewModels
 
         public AssignmentPageModel()
         {
+            _epcBuilder = new EPCBuilder();
 
             if (_allItems == null)
                 _allItems = new ObservableCollection<TagItem>();
@@ -363,7 +369,7 @@ namespace MauiRfidSample.MVVM.ViewModels
                 });
             }
 
-        }
+        } 
 
         public void AccessOperationsWriteClicked()
         {
@@ -378,8 +384,13 @@ namespace MauiRfidSample.MVVM.ViewModels
                     ShowAlert("Check Prefix and Reference");
                     return;
                 }
-                int builtEPC = BuildEPC();
-                if (builtEPC == 1)
+                //
+                //
+                //change this back to builtEPC = 1 when referencing the Viewmodel EPCBuilder if this does not work
+                //
+                //
+                AccessData = _epcBuilder.EPCDelivery(FilterEPC, PartitionEPC, PrefixEPC, ReferenceEPC, SerialEPC, AccessData);
+                if (AccessData == "1")
                 {
                     return;
                 }
