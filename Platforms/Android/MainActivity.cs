@@ -14,7 +14,15 @@ using Com.Zebra.Rfid.Api3;
 
 namespace MauiRfidSample
 {
-    [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
+    [Activity(Theme = "@style/Maui.SplashTheme",
+              MainLauncher = true,
+              LaunchMode = LaunchMode.SingleTop,
+              ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
+    [IntentFilter(new[] { Intent.ActionView },
+              Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
+              DataScheme = "myapp",
+              DataHost = "oauth",
+              DataPath = "/callback")]
     public class MainActivity : MauiAppCompatActivity
     {
 
