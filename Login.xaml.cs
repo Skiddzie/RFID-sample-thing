@@ -17,6 +17,7 @@ public partial class Login : ContentPage
     {
         string clientId = "3MVG9FINO1nsxRuCKdhiAIOm6bjbYgBzJOWu9V7zNWfXv.W7NNd6a5zOXrIN3gVQxpS48QA0Qo6zbweC4T8lH";
         string clientSecret = "A72411D38F432952D201A224FB7C57C2BA7BE516278D87EB4FD7DC05F5C1AF65";
+        //the redirect is also defined in MainActivity.cs
         string redirectUri = "myapp://oauth/callback";
         string authorizeBaseUrl = "https://login.salesforce.com/services/oauth2/authorize";
         string tokenUrl = "https://login.salesforce.com/services/oauth2/token";
@@ -28,18 +29,17 @@ public partial class Login : ContentPage
 
         try
         {
-            Console.WriteLine("Starting AuthenticateAsync...");
             WebAuthenticatorResult result = await WebAuthenticator.Default.AuthenticateAsync(
                 new Uri(loginUrl),
                 new Uri(redirectUri));
             await Navigation.PushAsync(new MainPage());
-            Console.WriteLine("AuthenticateAsync completed.");
-            await DisplayAlert("Success", "Authentication completed successfully!", "OK");
+            await DisplayAlert("Success", "Authentication completed successfully", "OK");
         }
+        //john, this exception is happening as you click the login button.
+        //you can briefly see the alert pop up immediately after clicking before the browser opens
         catch (TaskCanceledException)
         {
-            Console.WriteLine("TaskCanceledException: The authentication process was canceled.");
-            await DisplayAlert("Error", "TaskCanceledException: Authentication was canceled or timed out.", "OK");
+            await DisplayAlert("Error", "Authentication canceled or timed out.", "OK");
         }
         catch (Exception ex)
         {
