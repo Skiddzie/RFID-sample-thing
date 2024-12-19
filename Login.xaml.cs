@@ -3,48 +3,104 @@ namespace MauiRfidSample;
 using System.Text.Json;
 using System.Net.Http;
 using Microsoft.Maui.Authentication;
+using System.Diagnostics;
 
 public partial class Login : ContentPage
 {
+    private const string ClientId = "3MVG9FINO1nsxRuCKdhiAIOm6bjbYgBzJOWu9V7zNWfXv.W7NNd6a5zOXrIN3gVQxpS48QA0Qo6zbweC4T8lH";
+    private const string ClientSecret = "A72411D38F432952D201A224FB7C57C2BA7BE516278D87EB4FD7DC05F5C1AF65";
+    private const string RedirectUri = "myapp://oauth/callback";
+    private const string AuthUrl = "https://rfidmaui-dev-ed.develop.my.salesforce.com/services/oauth2/authorize";
+    private const string TokenUrl = "https://rfidmaui-dev-ed.develop.my.salesforce.com/services/oauth2/token";
+
     public Login()
     {
         InitializeComponent();
         BindingContext = this;
         Title = "Login";
     }
-
+    private async void OnNavigateButtonClicked(object sender, EventArgs e)
+    {
+        bool success = SecureStorage.Default.Remove("AccessToken"); // 
+        await Navigation.PushAsync(new MainPage());
+    }
     private async void OnLoginButtonClicked(object sender, EventArgs e)
     {
-        string clientId = "3MVG9FINO1nsxRuCKdhiAIOm6bjbYgBzJOWu9V7zNWfXv.W7NNd6a5zOXrIN3gVQxpS48QA0Qo6zbweC4T8lH";
-        string clientSecret = "A72411D38F432952D201A224FB7C57C2BA7BE516278D87EB4FD7DC05F5C1AF65";
-        //the redirect is also defined in MainActivity.cs
-        string redirectUri = "myapp://oauth/callback";
-        string authorizeBaseUrl = "https://login.salesforce.com/services/oauth2/authorize";
-        string tokenUrl = "https://login.salesforce.com/services/oauth2/token";
-
-        string loginUrl = $"{authorizeBaseUrl}?client_id={Uri.EscapeDataString(clientId)}" +
-                          $"&redirect_uri={Uri.EscapeDataString(redirectUri)}" +
-                          "&response_type=code" +
-                          "&prompt=login";
-
         try
         {
-            WebAuthenticatorResult result = await WebAuthenticator.Default.AuthenticateAsync(
-                new Uri(loginUrl),
-                new Uri(redirectUri));
-            await Navigation.PushAsync(new MainPage());
-            await DisplayAlert("Success", "Authentication completed successfully", "OK");
-        }
-        //john, this exception is happening as you click the login button.
-        //you can briefly see the alert pop up immediately after clicking before the browser opens
-        catch (TaskCanceledException)
-        {
-            await DisplayAlert("Error", "Authentication canceled or timed out.", "OK");
+            string loginUrl = $"{AuthUrl}?client_id={Uri.EscapeDataString(ClientId)}" +
+                              $"&redirect_uri={Uri.EscapeDataString(RedirectUri)}" +
+                              "&response_type=code&prompt=login";
+
+            Trace.WriteLine($"Opening browser for login: {loginUrl}");
+
+            await Browser.Default.OpenAsync(new Uri(loginUrl), BrowserLaunchMode.SystemPreferred);
+
+            Trace.WriteLine("Login page opened in the browser.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Exception: {ex.Message}");
-            await DisplayAlert("Error", $"Exception occurred: {ex.Message}", "OK");
+            Trace.WriteLine($"Error opening browser: {ex.Message}");
+            await DisplayAlert("Error", "Unable to open the browser. Please try again.", "OK");
         }
     }
+
+
+    public async Task ExchangeCodeForAccessToken(string code)
+    {
+        Trace.WriteLine("exchange code");
+        try
+        {
+            using var httpClient = new HttpClient();
+
+            var requestBody = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("grant_type", "authorization_code"),
+                new KeyValuePair<string, string>("code", code),
+                new KeyValuePair<string, string>("client_id", ClientId),
+                new KeyValuePair<string, string>("client_secret", ClientSecret),
+                new KeyValuePair<string, string>("redirect_uri", RedirectUri)
+            });
+
+            Trace.WriteLine("Exchanging authorization code for access token...");
+
+            var response = await httpClient.PostAsync(TokenUrl, requestBody);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                Trace.WriteLine($"Token Response: {responseContent}");
+
+                var tokenData = JsonSerializer.Deserialize<JsonElement>(responseContent);
+                string accessToken = tokenData.GetProperty("access_token").GetString();
+                string instanceUrl = tokenData.GetProperty("instance_url").GetString();
+
+                Trace.WriteLine($"Access Token: {accessToken}");
+                Trace.WriteLine($"Instance URL: {instanceUrl}");
+
+                await SecureStorage.SetAsync("AccessToken", accessToken);
+                await SecureStorage.SetAsync("InstanceUrl", instanceUrl);
+                Trace.WriteLine("secure storage done");
+
+                string accessTokenString = await SecureStorage.GetAsync("AccessToken");
+                Trace.WriteLine(accessTokenString);
+
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await Shell.Current.GoToAsync(nameof(MainPage));
+                });
+            }
+            else
+            {
+                Trace.WriteLine($"Failed to get access token: {responseContent}");
+                await DisplayAlert("Error", "Failed to exchange authorization code for access token.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine($"Error during token exchange: {ex.Message}");
+            await DisplayAlert("Error", "An error occurred while exchanging the token.", "OK");
+        }
+    }
+
 }

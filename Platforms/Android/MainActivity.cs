@@ -43,6 +43,47 @@ namespace MauiRfidSample
             CheckFileReadWritePermissions();
 
         }
+        protected override void OnNewIntent(Intent intent)
+        {
+            base.OnNewIntent(intent);
+
+            if (intent?.Data != null)
+            {
+                string uri = intent.Data.ToString();
+                var queryParams = ParseQueryParameters(uri);
+
+                if (queryParams.TryGetValue("code", out var code))
+                {
+                    var loginPage = new Login();
+                    _ = Task.Run(async () =>
+                    {
+                        await loginPage.ExchangeCodeForAccessToken(code);
+                    });
+                }
+            }
+        }
+
+        private Dictionary<string, string> ParseQueryParameters(string uri)
+        {
+            var query = new Uri(uri).Query;
+            var queryParams = new Dictionary<string, string>();
+
+            if (query.StartsWith("?"))
+            {
+                query = query.Substring(1);
+            }
+
+            foreach (var pair in query.Split('&'))
+            {
+                var keyValue = pair.Split('=');
+                if (keyValue.Length == 2)
+                {
+                    queryParams[Uri.UnescapeDataString(keyValue[0])] = Uri.UnescapeDataString(keyValue[1]);
+                }
+            }
+
+            return queryParams;
+        }
 
         /// <summary>
         /// Check application permissions

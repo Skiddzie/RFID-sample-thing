@@ -26,12 +26,17 @@
                 Keyboard="Text"
                 Placeholder="Username" />
 
-            <Entry
-                x:Name="PasswordEntry"
-                HorizontalOptions="FillAndExpand"
-                IsPassword="True"
-                Keyboard="Default"
-                Placeholder="Password" />
+            <Button
+                 Grid.Row="1"
+                 Margin="0,0,0,80"
+                 Padding="30"
+                 BackgroundColor="DodgerBlue"
+                 Clicked="OnNavigateButtonClicked"
+                 CornerRadius="105"
+                 FontSize="Large"
+                 HorizontalOptions="FillAndExpand"
+                 Text="Navigate"
+                 TextColor="White" />
         </VerticalStackLayout>
 
         <Button

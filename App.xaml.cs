@@ -1,4 +1,6 @@
-﻿namespace MauiRfidSample
+﻿using System.Diagnostics;
+
+namespace MauiRfidSample
 {
     public partial class App : Application
     {
