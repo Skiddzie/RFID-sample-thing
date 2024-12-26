@@ -18,7 +18,7 @@ namespace MauiRfidSample
         private async void InitializePageAsync()
         {
             rfidModel = ReaderModel.readerModel;
-            //bool success = SecureStorage.Default.Remove("AccessToken"); // Remove for testing, or use as needed
+            //bool success = SecureStorage.Default.Remove("AccessToken");
 
             string? accessTokenString = await SecureStorage.GetAsync("AccessToken");
 
