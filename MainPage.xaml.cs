@@ -21,11 +21,9 @@ namespace MauiRfidSample
         {
             rfidModel = ReaderModel.readerModel;
             //bool success = SecureStorage.Default.Remove("AccessToken");
-
-            string? accessTokenString = await SecureStorage.GetAsync("AccessToken");
-            string? instanceUrl = await SecureStorage.GetAsync("InstanceUrl");
-
-            _webService.SetOAuthToken(accessTokenString, instanceUrl);
+            Trace.WriteLine(_webService.ReturnToken());
+            string? accessTokenString = _webService.ReturnToken();
+            string? instanceUrl = _webService.ReturnUrl();
 
             if (string.IsNullOrEmpty(accessTokenString))
             {

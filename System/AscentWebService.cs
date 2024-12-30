@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.Maui.Networking;
 using System.Net.Http;
+using System.Text.Json;
 
 namespace MauiRfidSample
 {
@@ -51,7 +52,7 @@ namespace MauiRfidSample
         public string ReturnToken()
             { return _oauthToken; }
         public string ReturnUrl()
-        { return _serviceUrl; }
+            { return _serviceUrl; }
         // authenticate a user
         public async Task<bool> Authenticate(string strUsername, string strPassword, bool bTestMode)
         {
@@ -145,6 +146,65 @@ namespace MauiRfidSample
 
             // authenticated
             RFIDCommission.WriteToCommissionLog("_Authenticated: " + _Authenticated);
+            return _Authenticated;
+        }
+        public async Task<bool> AuthenticateWebserver(string code)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+
+                var requestBody = new FormUrlEncodedContent(new[]
+                {
+                new KeyValuePair<string, string>("grant_type", "authorization_code"),
+                new KeyValuePair<string, string>("code", code),
+                new KeyValuePair<string, string>("client_id", "3MVG9FINO1nsxRuCKdhiAIOm6bjbYgBzJOWu9V7zNWfXv.W7NNd6a5zOXrIN3gVQxpS48QA0Qo6zbweC4T8lH"),
+                new KeyValuePair<string, string>("client_secret", "A72411D38F432952D201A224FB7C57C2BA7BE516278D87EB4FD7DC05F5C1AF65"),
+                new KeyValuePair<string, string>("redirect_uri", "myapp://oauth/callback")
+            });
+
+                Trace.WriteLine("Exchanging authorization code for access token...");
+
+                var response = await httpClient.PostAsync("https://rfidmaui-dev-ed.develop.my.salesforce.com/services/oauth2/token", requestBody);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Trace.WriteLine($"Token Response: {responseContent}");
+
+                    var tokenData = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(responseContent);
+                    string accessToken = tokenData.GetProperty("access_token").GetString();
+                    string instanceUrl = tokenData.GetProperty("instance_url").GetString();
+
+                    Trace.WriteLine($"Access Token: {accessToken}");
+                    Trace.WriteLine($"Instance URL: {instanceUrl}");
+
+                    await SecureStorage.SetAsync("AccessToken", accessToken);
+                    await SecureStorage.SetAsync("InstanceUrl", instanceUrl);
+
+                    SetOAuthToken(accessToken, instanceUrl);
+
+                    Trace.WriteLine("secure storage done");
+
+                    string accessTokenString = await SecureStorage.GetAsync("AccessToken");
+                    Trace.WriteLine(accessTokenString);
+                    _Authenticated = true;
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Shell.Current.GoToAsync(nameof(MainPage));
+                    });
+                    
+                }
+                else
+                {
+                    Trace.WriteLine($"Failed to get access token: {responseContent}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error during token exchange: {ex.Message}");
+                _Authenticated = false;
+            }
             return _Authenticated;
         }
 

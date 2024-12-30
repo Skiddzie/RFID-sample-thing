@@ -26,6 +26,8 @@ namespace MauiRfidSample
     public class MainActivity : MauiAppCompatActivity
     {
 
+        private AscentWebService _webService;
+
         const string FIRMWARE_FOLDER = "/ZebraFirmware";
         const string OUTPUT_FOLDER = "/ZebraOutput";
 
@@ -52,12 +54,14 @@ namespace MauiRfidSample
                 string uri = intent.Data.ToString();
                 var queryParams = ParseQueryParameters(uri);
 
+                _webService = App.SharedAscentWebService;
+
                 if (queryParams.TryGetValue("code", out var code))
                 {
                     var loginPage = new Login();
                     _ = Task.Run(async () =>
                     {
-                        await loginPage.ExchangeCodeForAccessToken(code);
+                        await _webService.AuthenticateWebserver(code);
                     });
                 }
             }

@@ -12,16 +12,18 @@ public partial class Login : ContentPage
     private const string RedirectUri = "myapp://oauth/callback";
     private const string AuthUrl = "https://rfidmaui-dev-ed.develop.my.salesforce.com/services/oauth2/authorize";
     private const string TokenUrl = "https://rfidmaui-dev-ed.develop.my.salesforce.com/services/oauth2/token";
-
+    private AscentWebService _webService;
     public Login()
     {
         InitializeComponent();
+        _webService = App.SharedAscentWebService;
         BindingContext = this;
         Title = "Login";
     }
     private async void OnNavigateButtonClicked(object sender, EventArgs e)
     {
-        bool success = SecureStorage.Default.Remove("AccessToken"); // 
+        //bool success = SecureStorage.Default.Remove("AccessToken"); // 
+        _webService.SetOAuthToken(null, null);
         await Navigation.PushAsync(new MainPage());
     }
     private async void OnLoginButtonClicked(object sender, EventArgs e)
@@ -44,67 +46,4 @@ public partial class Login : ContentPage
             await DisplayAlert("Error", "Unable to open the browser. Please try again.", "OK");
         }
     }
-
-
-    public async Task ExchangeCodeForAccessToken(string code)
-    {
-        Trace.WriteLine("exchange code");
-        try
-        {
-            using var httpClient = new HttpClient();
-
-            var requestBody = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("grant_type", "authorization_code"),
-                new KeyValuePair<string, string>("code", code),
-                new KeyValuePair<string, string>("client_id", ClientId),
-                new KeyValuePair<string, string>("client_secret", ClientSecret),
-                new KeyValuePair<string, string>("redirect_uri", RedirectUri)
-            });
-
-            Trace.WriteLine("Exchanging authorization code for access token...");
-
-            var response = await httpClient.PostAsync(TokenUrl, requestBody);
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-                Trace.WriteLine($"Token Response: {responseContent}");
-
-                var tokenData = JsonSerializer.Deserialize<JsonElement>(responseContent);
-                string accessToken = tokenData.GetProperty("access_token").GetString();
-                string instanceUrl = tokenData.GetProperty("instance_url").GetString();
-
-                Trace.WriteLine($"Access Token: {accessToken}");
-                Trace.WriteLine($"Instance URL: {instanceUrl}");
-                var webService = new AscentWebService();
-
-                await SecureStorage.SetAsync("AccessToken", accessToken);
-                await SecureStorage.SetAsync("InstanceUrl", instanceUrl);
-
-                webService.SetOAuthToken(accessToken,instanceUrl);
-
-                Trace.WriteLine("secure storage done");
-
-                string accessTokenString = await SecureStorage.GetAsync("AccessToken");
-                Trace.WriteLine(accessTokenString);
-
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    await Shell.Current.GoToAsync(nameof(MainPage));
-                });
-            }
-            else
-            {
-                Trace.WriteLine($"Failed to get access token: {responseContent}");
-                await DisplayAlert("Error", "Failed to exchange authorization code for access token.", "OK");
-            }
-        }
-        catch (Exception ex)
-        {
-            Trace.WriteLine($"Error during token exchange: {ex.Message}");
-            await DisplayAlert("Error", "An error occurred while exchanging the token.", "OK");
-        }
-    }
-
 }
