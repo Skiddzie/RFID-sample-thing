@@ -21,6 +21,7 @@ namespace MauiRfidSample
             //bool success = SecureStorage.Default.Remove("AccessToken");
 
             string? accessTokenString = await SecureStorage.GetAsync("AccessToken");
+            string? instanceUrl = await SecureStorage.GetAsync("InstanceUrl");
 
             if (string.IsNullOrEmpty(accessTokenString))
             {
@@ -31,6 +32,8 @@ namespace MauiRfidSample
             {
                 Trace.WriteLine("Access Token found:");
                 Trace.WriteLine(accessTokenString);
+                Trace.WriteLine("Instance URL:");
+                Trace.WriteLine(instanceUrl);
             }
         }
 
