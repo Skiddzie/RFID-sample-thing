@@ -30,6 +30,13 @@
 
             </HorizontalStackLayout>
 
+            <HorizontalStackLayout Padding="10" VerticalOptions="Start">
+                <Button
+                    Command="{Binding DownLoadItemsCommand}"
+                    HorizontalOptions="End"
+                    Text="Get Item Master" />
+
+            </HorizontalStackLayout>
             <VerticalStackLayout Padding="10">
                 <Label
                     Margin="0,20,0,10"

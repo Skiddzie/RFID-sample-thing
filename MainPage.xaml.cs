@@ -7,11 +7,13 @@ namespace MauiRfidSample
 {
     public partial class MainPage : ContentPage
     {
+        private AscentWebService _webService;
         public ObservableCollection<string> Items { get; set; }
         private ReaderModel rfidModel;
         public MainPage()
         {
             InitializeComponent();
+            _webService = App.SharedAscentWebService;
             InitializePageAsync();
         }
 
@@ -22,6 +24,8 @@ namespace MauiRfidSample
 
             string? accessTokenString = await SecureStorage.GetAsync("AccessToken");
             string? instanceUrl = await SecureStorage.GetAsync("InstanceUrl");
+
+            _webService.SetOAuthToken(accessTokenString, instanceUrl);
 
             if (string.IsNullOrEmpty(accessTokenString))
             {

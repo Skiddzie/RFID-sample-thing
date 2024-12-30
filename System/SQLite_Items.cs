@@ -10,37 +10,17 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Diagnostics;
 
 namespace MauiRfidSample
 {
-    // Example placeholder Item class to mimic AscentWebService.Items.Item
-    // Remove or replace if you already have a reference to it in your solution
-    namespace MauiRfidSample.Items
-    {
-        public class Item
-        {
-            public string ID { get; set; }
-            public string Name { get; set; }
-            public string Description { get; set; }
-            public string ItemGroupID { get; set; }
-            public string DefaultLocationID { get; set; }
-            public string ItemURL { get; set; }
-            public string Color { get; set; }
-            public string Style { get; set; }
-            public string Material { get; set; }
-            public string UPC { get; set; }
-            public int TagCount { get; set; }
-            public bool UseForRFID { get; set; }
-            public string RFIDItemReference { get; set; }
-            // If needed, add BOMType or any other missing properties from your original code
-            public string BOMType { get; set; }
-        }
-    }
 
     public partial class SQLiteInterface
     {
         // Adjust this to your actual connection string
-        private string _ConnectionString = "Data Source=mydb.db;Version=3;";
+        static string dbPath = Path.Combine(FileSystem.AppDataDirectory, "item.db");
+        public string _ConnectionString = $"Data Source={dbPath};Version=3;";
+
 
         #region "Helper Methods (inline replacements for GlobalHelpers)"
 
@@ -352,7 +332,7 @@ namespace MauiRfidSample
             }
             catch (Exception ex)
             {
-                LogError(ex);
+                Trace.WriteLine(ex);
             }
 
             return Items;

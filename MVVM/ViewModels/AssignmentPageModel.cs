@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Timers;
 using System.Windows.Input;
 using Xamarin.Google.Crypto.Tink.Prf;
+using System.Diagnostics;
 
 using static Com.Zebra.Rfid.Api3.Antennas;
 using Exception = System.Exception;
@@ -21,6 +22,9 @@ namespace MauiRfidSample.MVVM.ViewModels
 {
     public class AssignmentPageModel : BaseViewModel
     {
+        private Items _itemsService;
+        private AscentWebService _webService;
+
         private static ObservableCollection<TagItem> _allItems;
         private static TagItem _mySelectedItem;
         private static Dictionary<String, int> tagListDict = new Dictionary<string, int>();
@@ -51,6 +55,7 @@ namespace MauiRfidSample.MVVM.ViewModels
 
         private readonly EPCBuilder _epcBuilder;
 
+        private SQLiteInterface _sqliteInterface;
 
         public List<string> MemoryBanks { get; } = new List<string> { "EPC", "TID", "USER", "ACCESS PASSWORD", "KILL PASSWORD" };
 
@@ -128,10 +133,14 @@ namespace MauiRfidSample.MVVM.ViewModels
         public ICommand SetPowerCommand { get; }
         public ICommand ReadCommand { get; }
         public ICommand WriteCommand { get; }
-
+        public ICommand DownLoadItemsCommand { get; }
 
         public AssignmentPageModel()
         {
+            _webService = App.SharedAscentWebService;
+            _itemsService = App.SharedItemsService;
+            _sqliteInterface = new SQLiteInterface();
+
             _epcBuilder = new EPCBuilder();
 
             if (_allItems == null)
@@ -157,6 +166,8 @@ namespace MauiRfidSample.MVVM.ViewModels
             ReadCommand = new Command(() => AccessOperationsReadClicked());
 
             WriteCommand = new Command(() => AccessOperationsWriteClicked());
+
+            DownLoadItemsCommand = new Command(() => DownLoadItems());
         }
 
         public int BuildEPC()
@@ -448,6 +459,32 @@ namespace MauiRfidSample.MVVM.ViewModels
             catch (Exception ex)
             {
                 Console.WriteLine("Error setting transmit power: " + ex.Message);
+            }
+        }
+
+        public async void DownLoadItems()
+        {
+            try
+            {
+                // Debug each variable
+                Trace.WriteLine($"_webService is null: {_webService == null}");
+                Trace.WriteLine($"_itemsService is null: {_itemsService == null}");
+                Trace.WriteLine($"_sqliteInterface is null: {_sqliteInterface == null}");
+
+                Trace.WriteLine(_webService.ReturnToken());
+                Trace.WriteLine(_webService.ReturnUrl());
+                var remoteItems = await _itemsService.GetItems(_webService);
+
+                _sqliteInterface.DropItemsTable();
+                _sqliteInterface.CreateItemsTable();
+                _sqliteInterface.AddToItemsTable(remoteItems);
+
+                Trace.WriteLine("Downloaded successfully");
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Item master download failed");
+                Trace.WriteLine(ex.Message);
             }
         }
 

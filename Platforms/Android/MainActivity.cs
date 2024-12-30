@@ -278,6 +278,7 @@ namespace MauiRfidSample
             {
                 MainActivity mainActivity = Platform.CurrentActivity as MainActivity;
                 mainActivity.CheckBTPermission();
+
             }
         }
 

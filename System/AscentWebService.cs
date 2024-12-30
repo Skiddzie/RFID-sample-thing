@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.Maui.Networking;
+using System.Net.Http;
 
 namespace MauiRfidSample
 {
@@ -19,7 +20,7 @@ namespace MauiRfidSample
         private string _serviceUrl = "";
 
         // create the Http Client used to authenticate
-        private HttpClient _httpClient = null;
+        private HttpClient _httpClient = new();
 
         // are we authenticated?
         private bool _Authenticated = false;
@@ -40,6 +41,17 @@ namespace MauiRfidSample
             public string Error { get; set; }
         }
 
+        //this is a temporary method until i figure out how to migrate login.xaml.cs to use ascentwebservice
+        public void SetOAuthToken(string accessToken, string instanceUrl)
+        {
+            _oauthToken = accessToken;
+            _serviceUrl = instanceUrl;
+            _Authenticated = true;
+        }
+        public string ReturnToken()
+            { return _oauthToken; }
+        public string ReturnUrl()
+        { return _serviceUrl; }
         // authenticate a user
         public async Task<bool> Authenticate(string strUsername, string strPassword, bool bTestMode)
         {
@@ -66,8 +78,8 @@ namespace MauiRfidSample
 
                     // production parameters
                     string sfdcURLLive = "https://login.salesforce.com/services/oauth2/token";
-                    string sfdcConsumerKeyLive = "3MVG9szVa2RxsqBb_CerPQPGN3RBxmfoiWHtsTf1lMIHFGCZXjznSmU1DXPsHW_tiVe6M6pS1KypLJvJWTjau";
-                    string sfdcConsumerSecretLive = "3982959255080993874";
+                    string sfdcConsumerKeyLive = "3MVG9FINO1nsxRuCKdhiAIOm6bjbYgBzJOWu9V7zNWfXv.W7NNd6a5zOXrIN3gVQxpS48QA0Qo6zbweC4T8lH";
+                    string sfdcConsumerSecretLive = "A72411D38F432952D201A224FB7C57C2BA7BE516278D87EB4FD7DC05F5C1AF65";
 
                     // production parameters
                     //string sfdcURLLive = "https://cah01--ConsPOC.cs11.my.salesforce.com/services/oauth2/token";
@@ -232,7 +244,7 @@ namespace MauiRfidSample
         public async Task<T> PostURL<T>(string strURL, object oObjectToPost)
         {
             T oResult = default(T);
-
+            _httpClient = new HttpClient(new AscentAndroidClientHandler());
             // if we are authenticated, ok to proceed
             if (_Authenticated)
             {
@@ -241,24 +253,20 @@ namespace MauiRfidSample
 
                 // create the POST request
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, restQuery);
+                Trace.WriteLine("http request");
                 string strJSON = JsonConvert.SerializeObject(oObjectToPost,
                             Newtonsoft.Json.Formatting.None,
                             new JsonSerializerSettings
                             {
                                 NullValueHandling = NullValueHandling.Ignore
                             });
-
                 request.Content = new StringContent(strJSON, Encoding.UTF8, "application/json");
-
                 // add token to header
                 request.Headers.Add("Authorization", "Bearer " + _oauthToken);
-
                 // return JSON to the caller
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
                 // call endpoint async
                 HttpResponseMessage response = await _httpClient.SendAsync(request);
-
                 // get the result as JSON
                 string result = await response.Content.ReadAsStringAsync();
 

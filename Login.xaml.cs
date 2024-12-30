@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 public partial class Login : ContentPage
 {
-    private const string ClientId = "3MVG9FINO1nsxRuCKdhiAIOm6bjbYgBzJOWu9V7zNWfXv.W7NNd6a5zOXrIN3gVQxpS48QA0Qo6zbweC4T8lH";
+    public const string ClientId = "3MVG9FINO1nsxRuCKdhiAIOm6bjbYgBzJOWu9V7zNWfXv.W7NNd6a5zOXrIN3gVQxpS48QA0Qo6zbweC4T8lH";
     private const string ClientSecret = "A72411D38F432952D201A224FB7C57C2BA7BE516278D87EB4FD7DC05F5C1AF65";
     private const string RedirectUri = "myapp://oauth/callback";
     private const string AuthUrl = "https://rfidmaui-dev-ed.develop.my.salesforce.com/services/oauth2/authorize";
@@ -77,9 +77,13 @@ public partial class Login : ContentPage
 
                 Trace.WriteLine($"Access Token: {accessToken}");
                 Trace.WriteLine($"Instance URL: {instanceUrl}");
+                var webService = new AscentWebService();
 
                 await SecureStorage.SetAsync("AccessToken", accessToken);
                 await SecureStorage.SetAsync("InstanceUrl", instanceUrl);
+
+                webService.SetOAuthToken(accessToken,instanceUrl);
+
                 Trace.WriteLine("secure storage done");
 
                 string accessTokenString = await SecureStorage.GetAsync("AccessToken");

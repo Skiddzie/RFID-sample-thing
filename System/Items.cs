@@ -101,9 +101,12 @@ namespace MauiRfidSample
                 }
             }
         }
-
+        public string giveString()
+        {
+            return "hello";
+        }
         // get the items
-        public static async Task<Item[]> GetItems(AscentWebService ws)
+        public async Task<Item[]> GetItems(AscentWebService ws)
         {
             Item[] ia = null;
 
@@ -116,9 +119,9 @@ namespace MauiRfidSample
             oq.maxNumResults = 50000;
 
             // currently, do not limit to RFID items only
-            oq.queryValues = new ObjectQuery.ObjectQueryValues[0];
-            //oq.queryValues = new ObjectQuery.ObjectQueryValues[1];
-            //oq.queryValues[0] = new ObjectQuery.ObjectQueryValues() { apiFieldName = "Use_For_RFID__c", value = "true" };
+            //oq.queryValues = new ObjectQuery.ObjectQueryValues[0];
+            oq.queryValues = new ObjectQuery.ObjectQueryValues[1];
+            oq.queryValues[0] = new ObjectQuery.ObjectQueryValues() { apiFieldName = "Use_For_RFID__c", value = "true" };
 
             // Complete the object query
             ObjectQuery.ObjectQueryRoot oqr = new ObjectQuery.ObjectQueryRoot();
