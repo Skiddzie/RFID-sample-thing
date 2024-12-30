@@ -54,100 +54,6 @@ namespace MauiRfidSample
         public string ReturnUrl()
             { return _serviceUrl; }
         // authenticate a user
-        public async Task<bool> Authenticate(string strUsername, string strPassword, bool bTestMode)
-        {
-            try
-            {
-                // assume not authenticated
-                _Authenticated = false;
-
-                // check for cached authentication
-                TimeSpan ts = DateTime.Now - _LastAuthenticated;
-                if ((_LastUsername == strUsername) && (_LastMode == bTestMode) && (ts.TotalMinutes < 15))
-                {
-                    // ok to use the cached credentials
-                    RFIDCommission.WriteToCommissionLog("Using Cached Credentials to call Webservice");
-                    _Authenticated = true;
-                }
-                else
-                {
-                    // set OAuth key and secret variables
-                    // Test parameters
-                    string sfdcURLTest = "https://test.salesforce.com/services/oauth2/token";
-                    string sfdcConsumerKeyTest = "3MVG98EE59.VIHmwphpbDAEk38AnqFl1sXHLwkRnnhYZnV._NL85V4v1tMDtXxYnwTC3CKJ1uAVBPvHwDgdFX";
-                    string sfdcConsumerSecretTest = "5110DB370BBF351D0B4911988A787F4B9BA8D838D851AE5A288CF6805106CF67";
-
-                    // production parameters
-                    string sfdcURLLive = "https://login.salesforce.com/services/oauth2/token";
-                    string sfdcConsumerKeyLive = "3MVG9FINO1nsxRuCKdhiAIOm6bjbYgBzJOWu9V7zNWfXv.W7NNd6a5zOXrIN3gVQxpS48QA0Qo6zbweC4T8lH";
-                    string sfdcConsumerSecretLive = "A72411D38F432952D201A224FB7C57C2BA7BE516278D87EB4FD7DC05F5C1AF65";
-
-                    // production parameters
-                    //string sfdcURLLive = "https://cah01--ConsPOC.cs11.my.salesforce.com/services/oauth2/token";
-                    //string sfdcConsumerKeyLive = "3MVG9GiqKapCZBwFfhPpgaILvLYltH_EpFg4e4tk3b4BBb7XCidzQGWzvCuuS.OrGo0BODYWGU.zcPy44dG6J";
-                    //string sfdcConsumerSecretLive = "7617848440587041666";
-
-                    // create content object to post as form content
-                    HttpContent content = new FormUrlEncodedContent(new System.Collections.Generic.Dictionary<string, string>
-                    {
-                        {"grant_type","password"},
-                        {"client_id",bTestMode ? sfdcConsumerKeyTest : sfdcConsumerKeyLive},
-                        {"client_secret",bTestMode ? sfdcConsumerSecretTest : sfdcConsumerSecretLive},
-                        {"username",strUsername},
-                        {"password",strPassword}
-                    });
-
-                    RFIDCommission.WriteToCommissionLog(string.Format("client_id:{0}, client_secret:{1},username:{2}, password:{3}", bTestMode ? sfdcConsumerKeyTest : sfdcConsumerKeyLive, bTestMode ? sfdcConsumerSecretTest : sfdcConsumerSecretLive, strUsername, strUsername));
-                    // the URL to use
-                    string strURL = bTestMode ? sfdcURLTest : sfdcURLLive;
-
-                    // SalesForce requires TLS 1.2 now
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                    // wait for connectivity, or timeout
-                    bool bConnected = await WaitForConnectivity();
-                    RFIDCommission.WriteToCommissionLog("WaitForConnectivity() : " + bConnected.ToString());
-
-                    // Post the authentication request                   
-                    _httpClient = new HttpClient(new AscentAndroidClientHandler());
-                    HttpResponseMessage message = await _httpClient.PostAsync(strURL, content);
-
-                    // wait for the response
-                    string responseString = await message.Content.ReadAsStringAsync();
-                    RFIDCommission.WriteToCommissionLog(responseString);
-
-                    // parse the results
-                    JObject obj = JObject.Parse(responseString);
-                    _oauthToken = (string)obj["access_token"];
-                    _serviceUrl = (string)obj["instance_url"];
-
-                    // if we got a token and url, we are authenticated
-                    if ((_oauthToken != null) && (_serviceUrl != null))
-                    {
-                        // authenticated!
-                        _Authenticated = true;
-
-                        // save the cached values
-                        _LastAuthenticated = DateTime.Now;
-                        _LastMode = bTestMode;
-                        _LastUsername = strUsername;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // log it
-                RFIDCommission.WriteToCommissionLog("ERR: " + ex.Message);
-                Trace.WriteLine(ex);
-            }
-
-            // if not authenticated, make sure the cache is cleared
-            if (!_Authenticated) ClearAuthenticationCache();
-
-            // authenticated
-            RFIDCommission.WriteToCommissionLog("_Authenticated: " + _Authenticated);
-            return _Authenticated;
-        }
         public async Task<bool> AuthenticateWebserver(string code)
         {
             try
@@ -165,7 +71,7 @@ namespace MauiRfidSample
 
                 Trace.WriteLine("Exchanging authorization code for access token...");
 
-                var response = await httpClient.PostAsync("https://rfidmaui-dev-ed.develop.my.salesforce.com/services/oauth2/token", requestBody);
+                var response = await httpClient.PostAsync("https://login.salesforce.com/services/oauth2/token", requestBody);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)

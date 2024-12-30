@@ -10,8 +10,8 @@ public partial class Login : ContentPage
     public const string ClientId = "3MVG9FINO1nsxRuCKdhiAIOm6bjbYgBzJOWu9V7zNWfXv.W7NNd6a5zOXrIN3gVQxpS48QA0Qo6zbweC4T8lH";
     private const string ClientSecret = "A72411D38F432952D201A224FB7C57C2BA7BE516278D87EB4FD7DC05F5C1AF65";
     private const string RedirectUri = "myapp://oauth/callback";
-    private const string AuthUrl = "https://rfidmaui-dev-ed.develop.my.salesforce.com/services/oauth2/authorize";
-    private const string TokenUrl = "https://rfidmaui-dev-ed.develop.my.salesforce.com/services/oauth2/token";
+    private const string AuthUrl = "https://login.salesforce.com/services/oauth2/authorize";
+    private const string TokenUrl = "https://login.salesforce.com/services/oauth2/token";
     private AscentWebService _webService;
     public Login()
     {
