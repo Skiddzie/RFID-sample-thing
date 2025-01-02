@@ -1,9 +1,9 @@
-﻿using MauiRfidSample.MVVM.Models;
-using MauiRfidSample.MVVM.ViewModels;
+﻿using AscentSolutions.ZebraRfid.MVVM.Models;
+using AscentSolutions.ZebraRfid.MVVM.ViewModels;
 
 
 
-namespace MauiRfidSample.MVVM.Views
+namespace AscentSolutions.ZebraRfid.MVVM.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ReaderList : ContentPage

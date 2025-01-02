@@ -3,7 +3,7 @@ using Android.Nfc;
 using Android.Util;
 using Android.Widget;
 using Com.Zebra.Rfid.Api3;
-using MauiRfidSample.MVVM.Views;
+using AscentSolutions.ZebraRfid.MVVM.Views;
 using Microsoft.Maui.Controls.Compatibility;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Threading;
 using static Android.Views.WindowInsetsAnimation;
 
 
-namespace MauiRfidSample.MVVM.Models
+namespace AscentSolutions.ZebraRfid.MVVM.Models
 {
     public class ReaderModel : Java.Lang.Object, Readers.IRFIDReaderEventHandler, IRfidEventsListener, IWifiScanDataEventsListener
     {

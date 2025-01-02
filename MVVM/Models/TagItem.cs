@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 
-namespace MauiRfidSample.MVVM.Models
+namespace AscentSolutions.ZebraRfid.MVVM.Models
 {
 
 	public class TagItem : INotifyPropertyChanged

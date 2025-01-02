@@ -1,9 +1,9 @@
-﻿using MauiRfidSample.MVVM.Models;
-using MauiRfidSample.MVVM;
+﻿using AscentSolutions.ZebraRfid.MVVM.Models;
+using AscentSolutions.ZebraRfid.MVVM;
 using System.Collections.ObjectModel;
-using MauiRfidSample.MVVM.ViewModels;
+using AscentSolutions.ZebraRfid.MVVM.ViewModels;
 using System.Diagnostics;
-namespace MauiRfidSample
+namespace AscentSolutions.ZebraRfid
 {
     public partial class MainPage : ContentPage
     {

@@ -3,7 +3,7 @@ using Java.Lang;
 using System.Xml;
 using Exception = Java.Lang.Exception;
 
-namespace MauiRfidSample.MVVM.Mode
+namespace AscentSolutions.ZebraRfid.MVVM.Mode
 {
     class FirmwareUpdateModel: Java.Lang.Object, IDcsSdkApiDelegate
     {

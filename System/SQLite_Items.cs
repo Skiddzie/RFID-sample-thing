@@ -12,7 +12,7 @@ using System.Data;
 using System.Text;
 using System.Diagnostics;
 
-namespace MauiRfidSample
+namespace AscentSolutions.ZebraRfid
 {
 
     public partial class SQLiteInterface
@@ -149,7 +149,7 @@ namespace MauiRfidSample
         }
 
         // populate the Items table
-        public bool AddToItemsTable(MauiRfidSample.Items.Item[] Items)
+        public bool AddToItemsTable(AscentSolutions.ZebraRfid.Items.Item[] Items)
         {
             bool bSuccess = false;
 
@@ -229,7 +229,7 @@ namespace MauiRfidSample
         }
 
         // get the Items that match the selected item group or any of its child groups
-        public MauiRfidSample.Items.Item[] GetItems(
+        public AscentSolutions.ZebraRfid.Items.Item[] GetItems(
             string strItemGroupID,
             string strColor,
             string strStyle,
@@ -238,7 +238,7 @@ namespace MauiRfidSample
             bool bRequireUseForRFID,
             bool bExcludePhantomBOM)
         {
-            MauiRfidSample.Items.Item[] Items = new MauiRfidSample.Items.Item[0];
+            AscentSolutions.ZebraRfid.Items.Item[] Items = new AscentSolutions.ZebraRfid.Items.Item[0];
 
             try
             {
@@ -304,11 +304,11 @@ namespace MauiRfidSample
                                 dtData.Load(reader);
                             }
 
-                            Items = new MauiRfidSample.Items.Item[dtData.Rows.Count];
+                            Items = new AscentSolutions.ZebraRfid.Items.Item[dtData.Rows.Count];
                             for (int i = 0; i < dtData.Rows.Count; i++)
                             {
                                 DataRow dr = dtData.Rows[i];
-                                var item = new MauiRfidSample.Items.Item
+                                var item = new AscentSolutions.ZebraRfid.Items.Item
                                 {
                                     ID = SafeString(dr["ID"]),
                                     Name = SafeString(dr["Name"]),
@@ -339,9 +339,9 @@ namespace MauiRfidSample
         }
 
         // get a single item by ID
-        public MauiRfidSample.Items.Item GetSingleItem(string strItemID)
+        public AscentSolutions.ZebraRfid.Items.Item GetSingleItem(string strItemID)
         {
-            var item = new MauiRfidSample.Items.Item();
+            var item = new AscentSolutions.ZebraRfid.Items.Item();
             try
             {
                 using (SqliteConnection sqlConn = new SqliteConnection(_ConnectionString))
@@ -557,9 +557,9 @@ namespace MauiRfidSample
         }
 
         // get the Items into a dictionary
-        public Dictionary<string, MauiRfidSample.Items.Item> GetItemDictionary(bool bRequireUseForRFID)
+        public Dictionary<string, AscentSolutions.ZebraRfid.Items.Item> GetItemDictionary(bool bRequireUseForRFID)
         {
-            Dictionary<string, MauiRfidSample.Items.Item> dcItems = new Dictionary<string, MauiRfidSample.Items.Item>();
+            Dictionary<string, AscentSolutions.ZebraRfid.Items.Item> dcItems = new Dictionary<string, AscentSolutions.ZebraRfid.Items.Item>();
 
             try
             {
@@ -589,7 +589,7 @@ namespace MauiRfidSample
                         for (int idx = 0; idx < dtData.Rows.Count; idx++)
                         {
                             DataRow dr = dtData.Rows[idx];
-                            var item = new MauiRfidSample.Items.Item
+                            var item = new AscentSolutions.ZebraRfid.Items.Item
                             {
                                 ID = SafeString(dr["ID"]),
                                 Name = SafeString(dr["Name"]),

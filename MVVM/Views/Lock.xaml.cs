@@ -1,6 +1,6 @@
 using AndroidX.Lifecycle;
 
-namespace MauiRfidSample.MVVM.Views;
+namespace AscentSolutions.ZebraRfid.MVVM.Views;
 
 public partial class Lock : ContentPage
 {

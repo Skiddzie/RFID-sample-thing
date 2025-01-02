@@ -7,7 +7,7 @@ using System.Text;
 
 
 
-namespace MauiRfidSample.MVVM.Models
+namespace AscentSolutions.ZebraRfid.MVVM.Models
 {
 	public class ReaderItem : INotifyPropertyChanged
 	{

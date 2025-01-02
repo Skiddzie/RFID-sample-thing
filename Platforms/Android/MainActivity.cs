@@ -12,7 +12,7 @@ using Android.Widget;
 using AndroidX.Core.Content;
 using Com.Zebra.Rfid.Api3;
 
-namespace MauiRfidSample
+namespace AscentSolutions.ZebraRfid
 {
     [Activity(Theme = "@style/Maui.SplashTheme",
               MainLauncher = true,

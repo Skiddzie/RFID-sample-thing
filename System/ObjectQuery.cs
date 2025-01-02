@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MauiRfidSample
+namespace AscentSolutions.ZebraRfid
 {
     public class ObjectQuery
     {

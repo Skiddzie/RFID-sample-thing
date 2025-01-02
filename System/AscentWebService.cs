@@ -12,7 +12,7 @@ using Microsoft.Maui.Networking;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace MauiRfidSample
+namespace AscentSolutions.ZebraRfid
 {
     public class AscentWebService
     {

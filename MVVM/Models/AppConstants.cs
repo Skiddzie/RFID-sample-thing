@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MauiRfidSample.MVVM.Models
+namespace AscentSolutions.ZebraRfid.MVVM.Models
 {
     class AppConstants
     {

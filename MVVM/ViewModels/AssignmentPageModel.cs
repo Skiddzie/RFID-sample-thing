@@ -1,7 +1,7 @@
 ﻿using Android.Widget;
 using Com.Zebra.Rfid.Api3;
 using Java.Lang;
-using MauiRfidSample.MVVM.Models;
+using AscentSolutions.ZebraRfid.MVVM.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,7 +18,7 @@ using Exception = System.Exception;
 using Object = System.Object;
 using String = System.String;
 
-namespace MauiRfidSample.MVVM.ViewModels
+namespace AscentSolutions.ZebraRfid.MVVM.ViewModels
 {
     public class AssignmentPageModel : BaseViewModel
     {

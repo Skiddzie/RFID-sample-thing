@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using Com.Zebra.Rfid.Api3;
 using Exception = Java.Lang.Exception;
 
-namespace MauiRfidSample.MVVM.Models
+namespace AscentSolutions.ZebraRfid.MVVM.Models
 {
     class ScannerModel : Java.Lang.Object, IDcsSdkApiDelegate
     {

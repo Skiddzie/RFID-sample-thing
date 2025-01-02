@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace MauiRfidSample
+namespace AscentSolutions.ZebraRfid
 {
     public partial class App : Application
     {

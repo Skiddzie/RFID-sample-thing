@@ -1,4 +1,4 @@
-namespace MauiRfidSample;
+namespace AscentSolutions.ZebraRfid;
 
 public partial class NewPage1 : ContentPage
 {

@@ -1,11 +1,11 @@
 ﻿using Com.Zebra.Rfid.Api3;
 using Com.Zebra.Scannercontrol;
-using MauiRfidSample.MVVM.Models;
+using AscentSolutions.ZebraRfid.MVVM.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MauiRfidSample.MVVM.ViewModels
+namespace AscentSolutions.ZebraRfid.MVVM.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
 	{

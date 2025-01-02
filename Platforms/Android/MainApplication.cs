@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace MauiRfidSample
+namespace AscentSolutions.ZebraRfid
 {
     [Application]
     public class MainApplication : MauiApplication

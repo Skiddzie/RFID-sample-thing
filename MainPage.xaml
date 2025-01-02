@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="MauiRfidSample.MainPage"
+    x:Class="AscentSolutions.ZebraRfid.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MauiRfidSample.MVVM.ViewModels"
+    xmlns:local="clr-namespace:AscentSolutions.ZebraRfid.MVVM.ViewModels"
     Title="Zebra RFID Maui Sample"
     Padding="5,0">
     <ContentPage.ToolbarItems>

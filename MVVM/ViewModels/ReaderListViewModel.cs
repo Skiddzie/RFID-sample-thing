@@ -1,12 +1,12 @@
 ﻿using Android.Widget;
 using Com.Zebra.Rfid.Api3;
-using MauiRfidSample.MVVM.Models;
+using AscentSolutions.ZebraRfid.MVVM.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using static Android.Graphics.ColorSpace;
 
-namespace MauiRfidSample.MVVM.ViewModels
+namespace AscentSolutions.ZebraRfid.MVVM.ViewModels
 {
     public class ReaderListViewModel : BaseViewModel
     {

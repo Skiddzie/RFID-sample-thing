@@ -1,4 +1,4 @@
-namespace MauiRfidSample;
+namespace AscentSolutions.ZebraRfid;
 
 using System.Text.Json;
 using System.Net.Http;
@@ -26,6 +26,7 @@ public partial class Login : ContentPage
         _webService.SetOAuthToken(null, null);
         await Navigation.PushAsync(new MainPage());
     }
+    //the logic for logging in is divide between this page, ascentwebservice.cs and mainactivity.cs
     private async void OnLoginButtonClicked(object sender, EventArgs e)
     {
         try
@@ -35,9 +36,7 @@ public partial class Login : ContentPage
                               "&response_type=code&prompt=login";
 
             Trace.WriteLine($"Opening browser for login: {loginUrl}");
-
             await Browser.Default.OpenAsync(new Uri(loginUrl), BrowserLaunchMode.SystemPreferred);
-
             Trace.WriteLine("Login page opened in the browser.");
         }
         catch (Exception ex)

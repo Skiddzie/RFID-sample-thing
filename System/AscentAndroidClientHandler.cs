@@ -3,7 +3,7 @@ using Xamarin.Android.Net;
 using System.Threading.Tasks;
 using System.Net.Http;
 
-namespace MauiRfidSample
+namespace AscentSolutions.ZebraRfid
 {
     public class AscentAndroidClientHandler: AndroidClientHandler
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace MauiRfidSample
+namespace AscentSolutions.ZebraRfid
 {
     public static class MauiProgram
     {

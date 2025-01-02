@@ -1,10 +1,10 @@
 ﻿using Com.Zebra.Rfid.Api3;
-using MauiRfidSample.MVVM.Models;
+using AscentSolutions.ZebraRfid.MVVM.Models;
 using System.Reflection;
 
 
 
-namespace MauiRfidSample.MVVM.Views
+namespace AscentSolutions.ZebraRfid.MVVM.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	

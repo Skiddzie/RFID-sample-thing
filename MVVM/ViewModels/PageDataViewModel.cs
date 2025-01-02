@@ -1,10 +1,10 @@
 ﻿
-using MauiRfidSample.MVVM.Views;
+using AscentSolutions.ZebraRfid.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace MauiRfidSample.MVVM.ViewModels
+namespace AscentSolutions.ZebraRfid.MVVM.ViewModels
 {
 	public class PageDataViewModel
 	{
