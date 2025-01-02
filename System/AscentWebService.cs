@@ -21,7 +21,7 @@ namespace MauiRfidSample
         private string _serviceUrl = "";
 
         // create the Http Client used to authenticate
-        private HttpClient _httpClient = new();
+        private HttpClient _httpClient = new HttpClient(new AscentAndroidClientHandler());
 
         // are we authenticated?
         private bool _Authenticated = false;
@@ -210,7 +210,7 @@ namespace MauiRfidSample
         public async Task<T> PostURL<T>(string strURL, object oObjectToPost)
         {
             T oResult = default(T);
-            _httpClient = new HttpClient(new AscentAndroidClientHandler());
+            //_httpClient = new HttpClient(new AscentAndroidClientHandler());
             // if we are authenticated, ok to proceed
             if (_Authenticated)
             {

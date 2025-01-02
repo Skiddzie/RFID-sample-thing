@@ -29,7 +29,7 @@ namespace MauiRfidSample
             {
                 Trace.WriteLine("Access Token is null or empty. Navigating to Login page...");
                 await Navigation.PushAsync(new Login());
-            }
+            } 
             else
             {
                 Trace.WriteLine("Access Token found:");

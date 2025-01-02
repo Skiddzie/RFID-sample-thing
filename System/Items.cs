@@ -101,10 +101,6 @@ namespace MauiRfidSample
                 }
             }
         }
-        public string giveString()
-        {
-            return "hello";
-        }
         // get the items
         public async Task<Item[]> GetItems(AscentWebService ws)
         {
